@@ -1,4 +1,4 @@
-importScripts('math.js')
+importScripts('math.js', 'complex.js')
 
 /**
  * Complex addition. Really simple
@@ -59,23 +59,39 @@ function HSVtoRGB(h, s, v) {
 
 function mandelbrot(options)
 {
+  const a = options.a
+  const b = options.b
+  const c = options.c
+  const power = options.power
+  const incrementPerPixelH = options.incrementPerPixelH
+  const incrementPerPixelW = options.incrementPerPixelW
+  const top = options.top
+  const bottom = options.bottom
+  const left = options.left
+  const right = options.right
+  const iterations = options.iterations
+
   const img = new Uint8Array(options.arraySize)
+  const start = Date.now()
+
+  let ind = 0;
   let imgLocation = 0;
-  for (let h = options.top; h > options.bottom; h -= options.incrementPerPixelH)
+  for (let h = top; h > bottom; h -= incrementPerPixelH)
   {
-    for (let w = options.left; w < options.right; w += options.incrementPerPixelW)
+    for (let w = left; w < right; w += incrementPerPixelW)
     {
       const startPoint = [w,h];
       let currentPoint = [w,h];
 
       let neededIter = NaN;
       // currently image is all black or white for in/out respectively
-      for (let iter = 0; iter < options.iterations; iter++)
+      for (let iter = 0; iter < iterations; iter++)
       {
+        ind++;
         // the full mandelbrot equations
-        let firstTerm = multComplex(options.a, powComplex(currentPoint, options.power));
-        let secondTerm = multComplex(options.b, startPoint);
-        currentPoint = addComplex(addComplex(firstTerm, secondTerm), options.c);
+        let firstTerm = multComplex(a, powComplex(currentPoint, power));
+        let secondTerm = multComplex(b, startPoint);
+        currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
         
         // if point is outside a certain bound, it's not in the set
         if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
@@ -95,7 +111,7 @@ function mandelbrot(options)
       }
       else
       {
-        let hue = (neededIter**0.5)/(options.iterations**0.5);
+        let hue = (neededIter**0.5)/(iterations**0.5);
         let color = HSVtoRGB(hue, 1, 1);
         img[imgLocation*4]   = color[0];
         img[imgLocation*4+1] = color[1];
@@ -109,8 +125,59 @@ function mandelbrot(options)
   postMessage(img)
 }
 
+function buddhabrot(options)
+{
+  var visits = new Array(options.width*options.height).fill(0)
+
+  for (let i = 0; i < options.trials; i++)
+  {
+    let x1 = Math.random() * 4 -2
+    let y1 = Math.random() * 4 -2
+    
+    const startPoint = [x1,y1]
+    let currentPoint = [x1,y1]
+    let tmpPoints = [[...startPoint]]
+    let toInfinity = false;
+
+    for (let iter = 0; iter < options.iterations; iter++)
+    {
+      let firstTerm = multComplex(options.a, powComplex(currentPoint, options.power));
+      let secondTerm = multComplex(options.b, startPoint);
+      currentPoint = addComplex(addComplex(firstTerm, secondTerm), options.c);
+
+      if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
+      {
+        toInfinity = true;
+        break;
+      }
+      else
+      {
+        tmpPoints.push([...currentPoint]);
+      }
+    }
+    if (toInfinity)
+    {
+      for (let point of tmpPoints)
+      {
+        if (point[0] >= 2 || point[0] <= -2 || point[1] <= -2 || point[1] >= 2)
+          continue
+        let xcoord = Math.round((point[0]+2) * options.width/4);
+        let ycoord = Math.round((point[1]+2) * options.height/4);
+        if (xcoord < 0 || ycoord < 0 || xcoord + ycoord*options.width >= visits.length)
+          continue
+        visits[xcoord + ycoord*options.width]++;
+      }
+    }
+  }
+  postMessage(visits)
+}
+
+
+
 onmessage = function main(msg) {
   // msg.data is what I care about
   if (msg.data.type === 'mandelbrot')
     mandelbrot(msg.data);
+  if (msg.data.type === 'buddhabrot')
+    buddhabrot(msg.data)
 }
