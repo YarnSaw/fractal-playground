@@ -3,43 +3,57 @@
 <head>
   <link rel="stylesheet" href="index.css">
   <script src="index.js" defer></script>
+  <script src="math.js" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 
 <body>
   <header>
     <h1>Fractal Playground</h1>
   </header>
-  <div class="main-content">
-    <div>
-      <form>
-        <label>Fractal Algorithm</label>
-        <select name="options">
-          <option value="Mandelbrot">Mandelbrot</option>
-          <option value="Buddhabrot">Buddhabrot</option>
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+
+        <form>
+          <div class="row mb-3">
+            <div class="col-9">
+              <label>Fractal Algorithm</label>
+              <select name="options">
+                <option value="Mandelbrot">Mandelbrot</option>
+                <option value="Buddhabrot">Buddhabrot</option>
+              </select>    
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-9">
+              <label>Color Scheme</label>
+              <select name="colors">
+                <option value="Red">Red</option>
+                <option value="Green">Green</option>
+                <option value="Blue">Blue</option>
+              </select> 
+            </div>
+          </div>
+          <label>Tunables</label>
+          <input type="number" step="0.1">
+          <input type="number" step="0.1">
+          <input type="submit" value="Generate">
+        </form>
+        <label>Generation Settings</label>
+        <select name="aspect-ratio">
+          <option value="16:9">16:9</option>
+          <option value="Square">Square</option>
+          <option value="3:4">3:4</option>
         </select>
-        <label>Color Scheme</label>
-        <select name="colors">
-          <option value="Red">Red</option>
-          <option value="Green">Green</option>
-          <option value="Blue">Blue</option>
-        </select>
-        <label>Tunables</label>
-        <input type="number">
-        <input type="number">
-        <input type="submit" value="Generate">
-      </form>
-      <label>Generation Settings</label>
-      <select name="aspect-ratio">
-        <option value="16:9">16:9</option>
-        <option value="Square">Square</option>
-        <option value="3:4">3:4</option>
-      </select>
-      <input type="number" value="iterations">
+        <input type="number" value="iterations">
+      </div>
+      <div class="col-5">
+        <canvas id="canvas" width="500px" height="500px"></canvas>
+        <button>Download</button>
+      </div>
     </div>
-    <div class="canvas-container">
-      <canvas id="canvas" width="500px" height="500px"></canvas>
-      <button>Download</button>
-    </div>
+    
   </div>
 </body>
 
