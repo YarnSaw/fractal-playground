@@ -112,18 +112,95 @@ function mandelbrot(canvas, iterations, power, a, b, c)
     }
   }
   ctx.putImageData(img, 0, 0);
+}
 
+function buddhabrot(canvas, iterations, power, a, b, c) 
+{
+  const width = canvas.width;
+  const height = canvas.height;
+  const incrementPerPixelW = 4/width;
+  const incrementPerPixelH = 4/height;
 
+  const ctx = canvas.getContext('2d');
+  const img = ctx.createImageData(canvas.width, canvas.height);
+
+  console.log(img.data);
+
+  let imgLocation = 0;
+  let counts = []
+  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  {
+    counts.push([])
+    for (let w = -2; w < 2; w += incrementPerPixelW)
+    {
+      counts[counts.length -1].push(0)
+      img.data[imgLocation*4]   = 0;
+      img.data[imgLocation*4+1] = 0;
+      img.data[imgLocation*4+2] = 0;
+      img.data[imgLocation*4+3] = 255;
+      ++imgLocation;
+
+    }
+  }
+
+  console.log(img.data);
+
+  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  {
+    for (let w = -2; w < 2; w += incrementPerPixelW)
+    {
+      const startPoint = [w,h];
+      let currentPoint = [w,h];
+      let points = [];
+      let goesToInfinity = false;
+
+      for (let iter = 0; iter < iterations; iter++)
+      {
+        let firstTerm = multComplex(a, powComplex(currentPoint, power));
+        let secondTerm = multComplex(b, startPoint);
+        currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
+
+        if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
+        {
+          goesToInfinity = true;
+          break;
+        }
+        else
+        {
+          points.push(currentPoint);
+        }
+      }
+
+      if (!goesToInfinity)
+      {
+        for (let i = 0; i < points.length; ++i)
+        {
+          let location = Math.floor(((points[i][1] - 2)/incrementPerPixelH)*canvas.width + ((points[i][0] - 2)/incrementPerPixelW));
+          img.data[location*4] += 20;
+          img.data[location*4+1] += 20;
+          img.data[location*4+2] += 20;
+        }
+      }
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  console.log(img.data)
 }
 
 function main()
 {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  mandelbrot(canvas, 80, 2, [0.4,0], [1,0], [0,0])
+  // mandelbrot(canvas, 100, 3, [0.5,0], [1,0], [0,0])
+  // buddhabrot(canvas, 10, 2, [1,0], [1,0], [0,0]);
 }
 
+function handleSubmit(e) {
+  e.preventDefault();
+  console.log(e);
+}
 
+const form = document.getElementById("generation-form");
+form.addEventListener("submit", handleSubmit);
 
-
-window.onload = main
+window.onload = main;
