@@ -1,3 +1,6 @@
+
+var cores = navigator.hardwareConcurrency/2;
+
 /**
  * Complex addition. Really simple
  */
@@ -56,63 +59,57 @@ function HSVtoRGB(h, s, v) {
 
 function mandelbrot(canvas, iterations, power, a, b, c)
 {
-  console.log(canvas)
-  // determine width/height, as well as what the step along the number line each pixel represents
+  let top = 1
+  let bottom = -1
+  let left = -2
+  let right = 1
+
   const width = canvas.width;
-  const height = canvas.height;
-  const incrementPerPixelW = 4/width;
-  const incrementPerPixelH = 4/height;
+  const height = cores * Math.floor(canvas.height/cores); // shhhhhh no rounding problems
+  const incrementPerPixelW = (right-left)/width;
+  const incrementPerPixelH = (top-bottom)/height;
+  
+  const span = (top - bottom)/cores
+  const arraySize = width*Math.floor(4*height/cores)
+  const workers = []
 
-  // get image to modify
-  const ctx = canvas.getContext('2d');
-  const img = ctx.createImageData(canvas.width, canvas.height);
-  let imgLocation = 0;
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  for (let i = 0; i < cores; i++)
   {
-    for (let w = -2; w < 2; w += incrementPerPixelW)
+    bottom = top-span;
+
+    let workerNumber = i;
+    let worker = new Worker('worker.js');
+    worker.postMessage({
+      type: 'mandelbrot',
+      arraySize,
+      top,
+      bottom,
+      left,
+      right,
+      incrementPerPixelW,
+      incrementPerPixelH,
+      iterations,
+      power,
+      a,
+      b,
+      c
+    });
+
+    const workerHeight = height/cores
+    worker.onmessage = function(msg)
     {
-      imgLocation++;
-      const startPoint = [w,h];
-      let currentPoint = [w,h];
-
-      let neededIter = NaN;
-      // currently image is all black or white for in/out respectively
-      for (let iter = 0; iter < iterations; iter++)
+      const ctx = canvas.getContext('2d');
+      const img = ctx.createImageData(canvas.width, workerHeight);
+      for (let i = 0; i < msg.data.length; i++)
       {
-        // the full mandelbrot equations
-        let firstTerm = multComplex(a, powComplex(currentPoint, power));
-        let secondTerm = multComplex(b, startPoint);
-        currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
-        
-        // if point is outside a certain bound, it's not in the set
-        if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
-        {
-          neededIter = iter;
-          break;
-
-        }
+        img.data[i] = msg.data[i]
       }
-
-      if (Number.isNaN(neededIter))
-      {
-        img.data[imgLocation*4]   = 0;
-        img.data[imgLocation*4+1] = 0;
-        img.data[imgLocation*4+2] = 0;
-        img.data[imgLocation*4+3] = 255;
-      }
-      else
-      {
-        let hue = neededIter/iterations;
-        let color = HSVtoRGB(hue, 1, 1);
-        img.data[imgLocation*4]   = color[0];
-        img.data[imgLocation*4+1] = color[1];
-        img.data[imgLocation*4+2] = color[2];
-        img.data[imgLocation*4+3] = 255;
-      }
-      
+      ctx.putImageData(img, 0, workerNumber*workerHeight);
+      worker.terminate();
     }
-  }
-  ctx.putImageData(img, 0, 0);
+
+    top -= span;
+  }  
 }
 
 function buddhabrot(canvas, iterations, power, a, b, c) 
@@ -178,7 +175,6 @@ function buddhabrot(canvas, iterations, power, a, b, c)
     img.data[i*4+3] = 255;
   }
   ctx.putImageData(img, 0, 0);
-  console.log(img.data)
 }
 
 function main()
@@ -186,17 +182,17 @@ function main()
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   // mandelbrot(canvas, 100, 2, [1,0], [1,0], [0,0])
-  buddhabrot(canvas, 10, 2, [1,0], [1,0], [0,0]);
+  // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0]);
 }
 
 function handleSubmit(e) {
   e.preventDefault();
   const canvas = document.getElementById('canvas');
   const fractalPattern = e.target.options[e.target.options.selectedIndex].value;
-  const power = e.target.power.value;
-  const a = e.target.a.value;
-  const b = e.target.b.value;
-  const c = e.target.c.value;
+  const power = parseFloat(e.target.power.value);
+  const a = parseFloat(e.target.a.value);
+  const b = parseFloat(e.target.b.value);
+  const c = parseFloat(e.target.c.value);
   console.log(power);
   console.log(a);
   console.log(b);
