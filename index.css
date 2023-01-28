@@ -5,6 +5,10 @@ header {
     padding: 1rem;
 }
 
+h4 {
+    text-align: center;
+}
+
 .row {
     padding: 2rem;
 }
