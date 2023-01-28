@@ -42,6 +42,12 @@
           <input type="number" name="a" step="0.1">
           <input type="number" name="b" step="0.1">
           <input type="number" name="c" step="0.1">
+          <br>
+          <label>Dimensions</label>
+          <input type="number" name="xMin">
+          <input type="number" name="xMax">
+          <input type="number" name="yMin">
+          <input type="number" name="yMax">
           <input type="submit" value="Generate">
         </form>
         <label>Generation Settings</label>
@@ -54,7 +60,7 @@
       </div>
       <div class="col-5">
         <canvas id="canvas" width="500px" height="500px"></canvas>
-        <button>Download</button>
+        <button id="download" onclick="downloadImage()">Download</button>
       </div>
     </div>
 

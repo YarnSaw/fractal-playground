@@ -202,6 +202,10 @@ function handleSubmit(e) {
   const a = e.target.a.value;
   const b = e.target.b.value;
   const c = e.target.c.value;
+  const xMin = e.target.xMin.value;
+  const xMax = e.target.xMax.value;
+  const yMin = e.target.yMin.value;
+  const yMax = e.target.yMax.value;
   console.log(power);
   console.log(a);
   console.log(b);
@@ -209,12 +213,22 @@ function handleSubmit(e) {
 
   switch (fractalPattern) {
     case "Mandelbrot":
-      mandelbrot(canvas, 100, power, [a, 0], [b, 0], [c, 0]);
+      mandelbrot(canvas, 100, power, [a, 0], [b, 0], [c, 0], xMin, xMax, yMin, yMax);
       break;
     case "Buddhabrot":
-      buddhabrot(canvas, 100, power, [a, 0], [b, 0], [c, 0]);
+      buddhabrot(canvas, 100, power, [a, 0], [b, 0], [c, 0], xMin, xMax, yMin, yMax);
       break;
   }
+}
+
+function downloadImage() {
+  console.log("download")
+  const canvas = document.getElementById("canvas");
+  const URL = canvas.toDataURL("image/png")
+  let a = document.createElement("a");
+  a.href = URL
+  a.download = "fractal.png";
+  a.click();
 }
 
 const form = document.getElementById("generation-form");
