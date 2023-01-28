@@ -56,6 +56,7 @@ function HSVtoRGB(h, s, v) {
 
 function mandelbrot(canvas, iterations, power, a, b, c)
 {
+  console.log(canvas)
   // determine width/height, as well as what the step along the number line each pixel represents
   const width = canvas.width;
   const height = canvas.height;
@@ -124,35 +125,18 @@ function buddhabrot(canvas, iterations, power, a, b, c)
   const ctx = canvas.getContext('2d');
   const img = ctx.createImageData(canvas.width, canvas.height);
 
-  console.log(img.data);
+  let visits = new Array(width*height).fill(0)
+  let trials = 1000000;
 
-  let imgLocation = 0;
-  let counts = []
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  for (let i = 0; i < trials; i++)
   {
-    counts.push([])
-    for (let w = -2; w < 2; w += incrementPerPixelW)
-    {
-      counts[counts.length -1].push(0)
-      img.data[imgLocation*4]   = 0;
-      img.data[imgLocation*4+1] = 0;
-      img.data[imgLocation*4+2] = 0;
-      img.data[imgLocation*4+3] = 255;
-      ++imgLocation;
-
-    }
-  }
-
-  console.log(img.data);
-
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
-  {
-    for (let w = -2; w < 2; w += incrementPerPixelW)
-    {
-      const startPoint = [w,h];
-      let currentPoint = [w,h];
-      let points = [];
-      let goesToInfinity = false;
+      let x1 = Math.random() * 4 -2
+      let y1 = Math.random() * 4 -2
+      
+      const startPoint = [x1,y1]
+      let currentPoint = [x1,y1]
+      let tmpPoints = [[...startPoint]]
+      let toInfinity = false;
 
       for (let iter = 0; iter < iterations; iter++)
       {
@@ -162,26 +146,36 @@ function buddhabrot(canvas, iterations, power, a, b, c)
 
         if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
         {
-          goesToInfinity = true;
+          toInfinity = true;
           break;
         }
         else
         {
-          points.push(currentPoint);
+          tmpPoints.push([...currentPoint]);
         }
       }
-
-      if (!goesToInfinity)
+      if (toInfinity)
       {
-        for (let i = 0; i < points.length; ++i)
+        for (let point of tmpPoints)
         {
-          let location = Math.floor(((points[i][1] - 2)/incrementPerPixelH)*canvas.width + ((points[i][0] - 2)/incrementPerPixelW));
-          img.data[location*4] += 20;
-          img.data[location*4+1] += 20;
-          img.data[location*4+2] += 20;
+          if (point[0] >= 2 || point[0] <= -2 || point[1] <= -2 || point[1] >= 2)
+            continue
+          let xcoord = Math.round((point[0]+2) * width/4);
+          let ycoord = Math.round((point[1]+2) * width/4);
+          if (xcoord < 0 || ycoord < 0 || xcoord + ycoord*width >= visits.length)
+            continue
+          visits[xcoord + ycoord*width]++;
         }
       }
     }
+
+  const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
+  for (let i = 0; i < visits.length; i++)
+  {
+    img.data[i*4] = 255*visits[i]/mostVisited;
+    img.data[i*4+1] = 0;
+    img.data[i*4+2] = 0;
+    img.data[i*4+3] = 255;
   }
   ctx.putImageData(img, 0, 0);
   console.log(img.data)
@@ -191,12 +185,13 @@ function main()
 {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  // mandelbrot(canvas, 100, 3, [0.5,0], [1,0], [0,0])
-  // buddhabrot(canvas, 10, 2, [1,0], [1,0], [0,0]);
+  // mandelbrot(canvas, 100, 2, [1,0], [1,0], [0,0])
+  buddhabrot(canvas, 10, 2, [1,0], [1,0], [0,0]);
 }
 
 function handleSubmit(e) {
   e.preventDefault();
+  const canvas = document.getElementById('canvas');
   const fractalPattern = e.target.options[e.target.options.selectedIndex].value;
   const power = e.target.power.value;
   const a = e.target.a.value;
