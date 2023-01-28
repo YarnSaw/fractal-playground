@@ -9,26 +9,62 @@ h4 {
     text-align: center;
 }
 
-.row {
-    padding: 2rem;
+label {
+    font-weight: bold;
 }
 
 .input-container {
-    margin-right: 1rem;
+    padding: 2rem;
 }
 
 .canvas-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: 1rem;
+    padding: 2rem;
+}
+
+.top-dropdowns {
+    display: grid;
+    padding-bottom: 1rem;
+}
+
+.tunables-container {
+    padding-bottom: 1rem;
+    display: grid;
+    grid-template-columns: 2;
+}
+
+.tunable-input {
+    display: flex;
+    justify-content: space-between;
+}
+
+.size-limit {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dimension-container {
+    padding-bottom: 1rem;
+}
+
+.generation-input {
+    display: flex;
+    justify-content: space-between;
+}
+
+.generate-button-container {
+    display: flex;
+    justify-content: center;
 }
 
 #canvas {
     border: 5px solid black;
 }
 
-#download {
+#download,
+#generate {
     margin: 2rem;
     padding: 1rem;
     font-size: 1.4rem;

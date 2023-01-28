@@ -19,55 +19,90 @@
 
         <form id="generation-form">
           <h4>Options</h4>
-          <div class="row mb-3">
-            <div class="col-9">
-              <label>Fractal Algorithm</label>
-              <select name="options">
-                <option value="Mandelbrot">Mandelbrot</option>
-                <option value="Buddhabrot">Buddhabrot</option>
+          <div class="top-dropdowns">
+            <label>Fractal Algorithm</label>
+            <select name="options">
+              <option value="Mandelbrot">Mandelbrot</option>
+              <option value="Buddhabrot">Buddhabrot</option>
+            </select>
+            <label>Color Scheme</label>
+            <select name="colors">
+              <option value="Red">Red</option>
+              <option value="Green">Green</option>
+              <option value="Blue">Blue</option>
+            </select>
+          </div>
+          <div class="tunables-container">
+            <h5>Tunables</h5>
+            <div class="tunable-input">
+              <label>Iterations</label>
+              <input type="number" name="iterations" step="1">
+            </div>
+            <div class="tunable-input">
+              <label>Power</label>
+              <input type="number" name="power" step="0.1">
+            </div>
+            <div class="tunable-input">
+              <label>A</label>
+              <div class="complex-input">
+                <input type="number" name="a" step="0.1">
+                + i
+                <input type="number" name="ai" step="0.1">
+              </div>
+            </div>
+            <div class="tunable-input">
+              <label>B</label>
+              <div class="complex-input">
+                <input type="number" name="b" step="0.1">
+                + i
+                <input type="number" name="bi" step="0.1">
+              </div>
+            </div>
+            <div class="tunable-input">
+              <label>C</label>
+              <div class="complex-input">
+                <input type="number" name="c" step="0.1">
+                + i
+                <input type="number" name="ci" step="0.1">
+              </div>
+            </div>
+          </div>
+          <div class="dimension-container">
+            <h5>Dimensions</h5>
+            <div class="size-limit">
+              <label>xMin</label>
+              <input type="number" name="xMin">
+              <label>xMax</label>
+              <input type="number" name="xMax">
+            </div>
+            <div class="size-limit">
+              <label>yMin</label>
+              <input type="number" name="yMin">
+              <label>yMax</label>
+              <input type="number" name="yMax">
+            </div>
+          </div>
+          <div class="generation-container">
+            <h5>Generation Settings</h5>
+            <div class="generation-input">
+              <label>Aspect Ratio</label>
+              <select name="aspect-ratio">
+                <option value="16:9">16:9</option>
+                <option value="Square">Square</option>
+                <option value="3:4">3:4</option>
+              </select>
+              <label>File Format</label>
+              <select name="file-format">
+                <option value="PNG">PNG</option>
+                <option value="JPG">JPG</option>
+                <option value="SVG">SVG</option>
               </select>
             </div>
           </div>
-          <div class="row mb-3">
-            <div class="col-9">
-              <label>Color Scheme</label>
-              <select name="colors">
-                <option value="Red">Red</option>
-                <option value="Green">Green</option>
-                <option value="Blue">Blue</option>
-              </select>
-            </div>
+          <div class="generate-button-container">
+            <input type="submit" id="generate" value="Generate">
           </div>
-          <h5>Tunables</h5>
-          <label>Iterations</label>
-          <input type="number" name="iterations" step="1">
-          <label>Power</label>
-          <input type="number" name="power" step="0.1">
-          <label>A</label>
-          <input type="number" name="a" step="0.1">
-          <label>B</label>
-          <input type="number" name="b" step="0.1">
-          <label>C</label>
-          <input type="number" name="c" step="0.1">
-          <br>
-          <h5>Dimensions</h5>
-          <label>xMin</label>
-          <input type="number" name="xMin">
-          <label>xMax</label>
-          <input type="number" name="xMax">
-          <label>yMin</label>
-          <input type="number" name="yMin">
-          <label>yMax</label>
-          <input type="number" name="yMax">
-          <input type="submit" value="Generate">
         </form>
-        <label>Generation Settings</label>
-        <select name="aspect-ratio">
-          <option value="16:9">16:9</option>
-          <option value="Square">Square</option>
-          <option value="3:4">3:4</option>
-        </select>
-        <input type="number" value="iterations">
       </div>
       <div class="col-5 canvas-container">
         <canvas id="canvas" width="500px" height="500px"></canvas>
