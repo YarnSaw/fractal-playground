@@ -197,7 +197,24 @@ function main()
 
 function handleSubmit(e) {
   e.preventDefault();
-  console.log(e);
+  const fractalPattern = e.target.options[e.target.options.selectedIndex].value;
+  const power = e.target.power.value;
+  const a = e.target.a.value;
+  const b = e.target.b.value;
+  const c = e.target.c.value;
+  console.log(power);
+  console.log(a);
+  console.log(b);
+  console.log(c);
+
+  switch (fractalPattern) {
+    case "Mandelbrot":
+      mandelbrot(canvas, 100, power, [a, 0], [b, 0], [c, 0]);
+      break;
+    case "Buddhabrot":
+      buddhabrot(canvas, 100, power, [a, 0], [b, 0], [c, 0]);
+      break;
+  }
 }
 
 const form = document.getElementById("generation-form");
