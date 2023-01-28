@@ -1,3 +1,6 @@
+
+var cores = navigator.hardwareConcurrency/2;
+
 /**
  * Complex addition. Really simple
  */
@@ -56,62 +59,57 @@ function HSVtoRGB(h, s, v) {
 
 function mandelbrot(canvas, iterations, power, a, b, c)
 {
-  // determine width/height, as well as what the step along the number line each pixel represents
+  let top = 1
+  let bottom = -1
+  let left = -2
+  let right = 1
+
   const width = canvas.width;
-  const height = canvas.height;
-  const incrementPerPixelW = 4/width;
-  const incrementPerPixelH = 4/height;
+  const height = cores * Math.floor(canvas.height/cores); // shhhhhh no rounding problems
+  const incrementPerPixelW = (right-left)/width;
+  const incrementPerPixelH = (top-bottom)/height;
+  
+  const span = (top - bottom)/cores
+  const arraySize = width*Math.floor(4*height/cores)
+  const workers = []
 
-  // get image to modify
-  const ctx = canvas.getContext('2d');
-  const img = ctx.createImageData(canvas.width, canvas.height);
-  let imgLocation = 0;
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  for (let i = 0; i < cores; i++)
   {
-    for (let w = -2; w < 2; w += incrementPerPixelW)
+    bottom = top-span;
+
+    let workerNumber = i;
+    let worker = new Worker('worker.js');
+    worker.postMessage({
+      type: 'mandelbrot',
+      arraySize,
+      top,
+      bottom,
+      left,
+      right,
+      incrementPerPixelW,
+      incrementPerPixelH,
+      iterations,
+      power,
+      a,
+      b,
+      c
+    });
+
+    const workerHeight = height/cores
+    worker.onmessage = function(msg)
     {
-      imgLocation++;
-      const startPoint = [w,h];
-      let currentPoint = [w,h];
-
-      let neededIter = NaN;
-      // currently image is all black or white for in/out respectively
-      for (let iter = 0; iter < iterations; iter++)
+      const ctx = canvas.getContext('2d');
+      const img = ctx.createImageData(canvas.width, workerHeight);
+      for (let i = 0; i < msg.data.length; i++)
       {
-        // the full mandelbrot equations
-        let firstTerm = multComplex(a, powComplex(currentPoint, power));
-        let secondTerm = multComplex(b, startPoint);
-        currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
-        
-        // if point is outside a certain bound, it's not in the set
-        if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
-        {
-          neededIter = iter;
-          break;
-
-        }
+        img.data[i] = msg.data[i]
       }
-
-      if (Number.isNaN(neededIter))
-      {
-        img.data[imgLocation*4]   = 0;
-        img.data[imgLocation*4+1] = 0;
-        img.data[imgLocation*4+2] = 0;
-        img.data[imgLocation*4+3] = 255;
-      }
-      else
-      {
-        let hue = neededIter/iterations;
-        let color = HSVtoRGB(hue, 1, 1);
-        img.data[imgLocation*4]   = color[0];
-        img.data[imgLocation*4+1] = color[1];
-        img.data[imgLocation*4+2] = color[2];
-        img.data[imgLocation*4+3] = 255;
-      }
-      
+      ctx.putImageData(img, 0, workerNumber*workerHeight);
+      worker.terminate();
     }
-  }
-  ctx.putImageData(img, 0, 0);
+
+    top -= span;
+  }  
 }
 
 function buddhabrot(canvas, iterations, power, a, b, c) 
@@ -124,35 +122,18 @@ function buddhabrot(canvas, iterations, power, a, b, c)
   const ctx = canvas.getContext('2d');
   const img = ctx.createImageData(canvas.width, canvas.height);
 
-  console.log(img.data);
+  let visits = new Array(width*height).fill(0)
+  let trials = 1000000;
 
-  let imgLocation = 0;
-  let counts = []
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  for (let i = 0; i < trials; i++)
   {
-    counts.push([])
-    for (let w = -2; w < 2; w += incrementPerPixelW)
-    {
-      counts[counts.length -1].push(0)
-      img.data[imgLocation*4]   = 0;
-      img.data[imgLocation*4+1] = 0;
-      img.data[imgLocation*4+2] = 0;
-      img.data[imgLocation*4+3] = 255;
-      ++imgLocation;
-
-    }
-  }
-
-  console.log(img.data);
-
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
-  {
-    for (let w = -2; w < 2; w += incrementPerPixelW)
-    {
-      const startPoint = [w,h];
-      let currentPoint = [w,h];
-      let points = [];
-      let goesToInfinity = false;
+      let x1 = Math.random() * 4 -2
+      let y1 = Math.random() * 4 -2
+      
+      const startPoint = [x1,y1]
+      let currentPoint = [x1,y1]
+      let tmpPoints = [[...startPoint]]
+      let toInfinity = false;
 
       for (let iter = 0; iter < iterations; iter++)
       {
@@ -162,50 +143,61 @@ function buddhabrot(canvas, iterations, power, a, b, c)
 
         if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
         {
-          goesToInfinity = true;
+          toInfinity = true;
           break;
         }
         else
         {
-          points.push(currentPoint);
+          tmpPoints.push([...currentPoint]);
         }
       }
-
-      if (!goesToInfinity)
+      if (toInfinity)
       {
-        for (let i = 0; i < points.length; ++i)
+        for (let point of tmpPoints)
         {
-          let location = Math.floor(((points[i][1] - 2)/incrementPerPixelH)*canvas.width + ((points[i][0] - 2)/incrementPerPixelW));
-          img.data[location*4] += 20;
-          img.data[location*4+1] += 20;
-          img.data[location*4+2] += 20;
+          if (point[0] >= 2 || point[0] <= -2 || point[1] <= -2 || point[1] >= 2)
+            continue
+          let xcoord = Math.round((point[0]+2) * width/4);
+          let ycoord = Math.round((point[1]+2) * width/4);
+          if (xcoord < 0 || ycoord < 0 || xcoord + ycoord*width >= visits.length)
+            continue
+          visits[xcoord + ycoord*width]++;
         }
       }
     }
+
+  const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
+  for (let i = 0; i < visits.length; i++)
+  {
+    img.data[i*4] = 255*visits[i]/mostVisited;
+    img.data[i*4+1] = 0;
+    img.data[i*4+2] = 0;
+    img.data[i*4+3] = 255;
   }
   ctx.putImageData(img, 0, 0);
-  console.log(img.data)
 }
 
 function main()
 {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  // mandelbrot(canvas, 100, 3, [0.5,0], [1,0], [0,0])
-  // buddhabrot(canvas, 10, 2, [1,0], [1,0], [0,0]);
+  // mandelbrot(canvas, 100, 2, [1,0], [1,0], [0,0])
+  // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0]);
 }
 
 function handleSubmit(e) {
   e.preventDefault();
+  const canvas = document.getElementById('canvas');
   const fractalPattern = e.target.options[e.target.options.selectedIndex].value;
-  const power = e.target.power.value;
-  const a = e.target.a.value;
-  const b = e.target.b.value;
-  const c = e.target.c.value;
+  const power = parseFloat(e.target.power.value);
+  const a = parseFloat(e.target.a.value);
+  const b = parseFloat(e.target.b.value);
+  const c = parseFloat(e.target.c.value);
   const xMin = e.target.xMin.value;
   const xMax = e.target.xMax.value;
   const yMin = e.target.yMin.value;
   const yMax = e.target.yMax.value;
+  
   console.log(power);
   console.log(a);
   console.log(b);
