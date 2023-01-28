@@ -1,7 +1,35 @@
 header {
     text-align: center;
+    background-color: navy;
+    color: lightgray;
+    padding: 1rem;
 }
 
-.main-content {
+.row {
+    padding: 2rem;
+}
+
+.input-container {
+    margin-right: 1rem;
+}
+
+.canvas-container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+#canvas {
+    border: 5px solid black;
+}
+
+#download {
+    margin: 2rem;
+    padding: 1rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 5%;
+    background-color: navy;
+    color: lightgray;
 }

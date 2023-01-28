@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <title>Fractal Playground</title>
   <link rel="stylesheet" href="index.css">
   <script src="index.js" defer></script>
   <script src="math.js" defer></script>
@@ -14,7 +15,7 @@
   </header>
   <div class="container">
     <div class="row">
-      <div class="col-6">
+      <div class="col-6 input-container">
 
         <form id="generation-form">
           <div class="row mb-3">
@@ -58,7 +59,7 @@
         </select>
         <input type="number" value="iterations">
       </div>
-      <div class="col-5">
+      <div class="col-5 canvas-container">
         <canvas id="canvas" width="500px" height="500px"></canvas>
         <button id="download" onclick="downloadImage()">Download</button>
       </div>
