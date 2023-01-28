@@ -1,8 +1,45 @@
 <html>
-  <head>
-    <script src="index.js" defer></script>
-  </head>
-  <body>
-    <canvas id="canvas" width="500px" height="500px"></canvas>
-  </body>
+
+<head>
+  <link rel="stylesheet" href="index.css">
+  <script src="index.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Fractal Playground</h1>
+  </header>
+  <div class="main-content">
+    <div>
+      <form>
+        <label>Fractal Algorithm</label>
+        <select name="options">
+          <option value="Mandelbrot">Mandelbrot</option>
+          <option value="Buddhabrot">Buddhabrot</option>
+        </select>
+        <label>Color Scheme</label>
+        <select name="colors">
+          <option value="Red">Red</option>
+          <option value="Green">Green</option>
+          <option value="Blue">Blue</option>
+        </select>
+        <label>Tunables</label>
+        <input type="number">
+        <input type="number">
+      </form>
+      <label>Generation Settings</label>
+      <select name="aspect-ratio">
+        <option value="16:9">16:9</option>
+        <option value="Square">Square</option>
+        <option value="3:4">3:4</option>
+      </select>
+      <input type="number" value="iterations">
+    </div>
+    <div class="canvas-container">
+      <canvas id="canvas" width="500px" height="500px"></canvas>
+      <button>Download</button>
+    </div>
+  </div>
+</body>
+
 </html>
