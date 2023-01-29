@@ -35,7 +35,7 @@ function main()
   const ctx = canvas.getContext('2d');
   // mandelbrot(canvas, 500, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2)
   // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2);
-  newton(canvas, 50, [1,0], [1,0], [1,0], [1,0], [1,0], -2, 2, -2, 2)
+  // newton(canvas, 50, [1,0], [1,0], [1,0], [1,0], [1,0], -2, 2, -2, 2)
 }
 
 function handleSubmit(event) {
@@ -59,7 +59,7 @@ function handleSubmit(event) {
   const yMin = event.target.yMin.value === "" ? -2 : parseFloat(event.target.yMin.value);
   const yMax = event.target.yMax.value === "" ? 2 : parseFloat(event.target.yMax.value);
 
-  const aspectRatio = e.target['aspect-ratio'].value;
+  const aspectRatio = event.target['aspect-ratio'].value;
   if (aspectRatio == "Square")
   {
     canvas.width = 500;
