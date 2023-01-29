@@ -8,7 +8,6 @@ function derivative(a,b,c,d,e)
 
 function newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
 {
-  console.log("sup")
   const width = canvas.width;
   const height = cores * Math.floor(canvas.height/cores); // shhhhhh no rounding problems
   const incrementPerPixelW = (right-left)/width;
@@ -26,7 +25,6 @@ function newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, t
     bottom = top-span;
 
     let worker = new Worker('worker.js');
-    console.log(top, bottom)
     worker.postMessage({
       type: 'newton',
       top,
@@ -44,72 +42,73 @@ function newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, t
       e,
     });
 
-    var index = i
-    var workerHeight = height/cores
+    let workerNumber = i
+    let workerHeight = height/cores
 
     worker.onmessage = function(msg)
     {
-      console.log("yo")
-      allEnds[index] = msg.data;
+      console.log(workerNumber, workerHeight)
+      allEnds[workerNumber] = msg.data;
       
       worker.terminate();
       workersComplete++
       
       if (workersComplete == cores)
       {
-        debugger;
-        console.log(index)
-        const endpoints = allEnds.flat();
-
         const ctx = canvas.getContext('2d');
-        const img = ctx.createImageData(canvas.width, workerHeight);
+        const img = ctx.createImageData(canvas.width, canvas.height);
 
         const epsilon = 0.05
         const potentialClusters = []
-        for (let ep of endpoints)
+        for (let endPoints of allEnds)
         {
-          let inCluster = false;
-          for (let i = 0; i < potentialClusters.length; i++)
+          for (let ep of endPoints)
           {
-            if (ep[1][0] > potentialClusters[i][0][0]-epsilon && ep[1][0] < potentialClusters[i][0][0]+epsilon
-            && ep[1][1] > potentialClusters[i][0][1]-epsilon && ep[1][1] < potentialClusters[i][0][1]+epsilon)
+            let inCluster = false;
+            for (let i = 0; i < potentialClusters.length; i++)
             {
-              potentialClusters[i][1]++;
-              inCluster = true
+              if (ep[1][0] > potentialClusters[i][0][0]-epsilon && ep[1][0] < potentialClusters[i][0][0]+epsilon
+              && ep[1][1] > potentialClusters[i][0][1]-epsilon && ep[1][1] < potentialClusters[i][0][1]+epsilon)
+              {
+                potentialClusters[i][1]++;
+                inCluster = true
+              }
             }
+            if (!inCluster)
+              potentialClusters.push([ep[1], 1])
           }
-          if (!inCluster)
-            potentialClusters.push([ep[1], 1])
         }
 
         const clusters = potentialClusters.filter((element) => element[1] > 100)
 
         let index = 0
-        for (let ep of endpoints)
+        for (let endPoints of allEnds)
         {
-          let inCluster = false;
-          for (let i = 0; i < clusters.length; i++)
+          for (let ep of endPoints)
           {
-            if (ep[1][0] > clusters[i][0][0]-epsilon && ep[1][0] < clusters[i][0][0]+epsilon
-            && ep[1][1] > clusters[i][0][1]-epsilon && ep[1][1] < clusters[i][0][1]+epsilon)
+            let inCluster = false;
+            for (let i = 0; i < clusters.length; i++)
             {
-              img.data[index*4]   = i == 0 || i == 3 ? 255 :0;
-              img.data[index*4+1] = i == 1 || i == 3 ? 255 :0;
-              img.data[index*4+2] = i == 2? 255 :0;
-              img.data[index*4+3] = 255;
-              inCluster = true;
+              if (ep[1][0] > clusters[i][0][0]-epsilon && ep[1][0] < clusters[i][0][0]+epsilon
+              && ep[1][1] > clusters[i][0][1]-epsilon && ep[1][1] < clusters[i][0][1]+epsilon)
+              {
+                img.data[index*4]   = i == 0 || i == 3 ? 255 :0;
+                img.data[index*4+1] = i == 1 || i == 3 ? 255 :0;
+                img.data[index*4+2] = i == 2? 255 :0;
+                img.data[index*4+3] = 255;
+                inCluster = true;
+              }
             }
+            if (!inCluster)
+            {
+              img.data[index*4]   = 0;
+              img.data[index*4+1] = 0;
+              img.data[index*4+2] = 0;
+              img.data[index*4+3] = 255;
+            }
+            index++
           }
-          if (!inCluster)
-          {
-            img.data[index*4]   = 0;
-            img.data[index*4+1] = 0;
-            img.data[index*4+2] = 0;
-            img.data[index*4+3] = 255;
-          }
-          index++
         }
-
         ctx.putImageData(img, 0, 0);
       }
     }
@@ -117,10 +116,6 @@ function newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, t
     top -= span;
   }  
 }
-
-
-
-
 
 function newton_local(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
 {
