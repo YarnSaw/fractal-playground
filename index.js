@@ -37,6 +37,9 @@ function handleSubmit(e) {
   const a = parseFloat(e.target.a.value);
   const b = parseFloat(e.target.b.value);
   const c = parseFloat(e.target.c.value);
+  const ai = parseFloat(e.target.ai.value);
+  const bi = parseFloat(e.target.bi.value);
+  const ci = parseFloat(e.target.ci.value);
   const xMin = e.target.xMin.value;
   const xMax = e.target.xMax.value;
   const yMin = e.target.yMin.value;
@@ -49,10 +52,10 @@ function handleSubmit(e) {
 
   switch (fractalPattern) {
     case "Mandelbrot":
-      mandelbrot(canvas, 100, power, [a, 0], [b, 0], [c, 0], xMin, xMax, yMin, yMax);
+      mandelbrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       break;
     case "Buddhabrot":
-      buddhabrot(canvas, 100, power, [a, 0], [b, 0], [c, 0], xMin, xMax, yMin, yMax);
+      buddhabrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       break;
   }
 }
