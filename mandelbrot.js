@@ -59,19 +59,25 @@ function mandelbrot_worker(canvas, iterations, power, a, b, c)
 
 function mandelbrot_local(canvas, iterations, power, a, b, c)
 {
+
+  let top = 2
+  let bottom = -2
+  let left = -2
+  let right = 2
+
   // determine width/height, as well as what the step along the number line each pixel represents
   const width = canvas.width;
   const height = canvas.height;
-  const incrementPerPixelW = 4/width;
-  const incrementPerPixelH = 4/height;
+  const incrementPerPixelW = (right-left)/width;
+  const incrementPerPixelH = (top-bottom)/height;
 
   // get image to modify
   const ctx = canvas.getContext('2d');
   const img = ctx.createImageData(canvas.width, canvas.height);
   let imgLocation = 0;
-  for (let h = 2; h > -2; h -= incrementPerPixelH)
+  for (let h = top; h > bottom; h -= incrementPerPixelH)
   {
-    for (let w = -2; w < 2; w += incrementPerPixelW)
+    for (let w = left; w < right; w += incrementPerPixelW)
     {
       imgLocation++;
       const startPoint = [w,h];

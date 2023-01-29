@@ -129,10 +129,13 @@ function buddhabrot(options)
 {
   var visits = new Array(options.width*options.height).fill(0)
 
+  const heightDiff = options.top - options.bottom
+  const widthDiff = options.right - options.left
+  console.log(options.left, options.right, options.top, options.bottom, widthDiff, heightDiff)
   for (let i = 0; i < options.trials; i++)
   {
-    let x1 = Math.random() * 4 -2
-    let y1 = Math.random() * 4 -2
+    let x1 = Math.random() * (heightDiff) + (options.bottom)
+    let y1 = Math.random() * (widthDiff) + (options.left)
     
     const startPoint = [x1,y1]
     let currentPoint = [x1,y1]
@@ -145,7 +148,7 @@ function buddhabrot(options)
       let secondTerm = multComplex(options.b, startPoint);
       currentPoint = addComplex(addComplex(firstTerm, secondTerm), options.c);
 
-      if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
+      if (Math.abs(currentPoint[0]) > 4 || Math.abs(currentPoint[1]) > 4)
       {
         toInfinity = true;
         break;
@@ -159,12 +162,16 @@ function buddhabrot(options)
     {
       for (let point of tmpPoints)
       {
-        if (point[0] >= 2 || point[0] <= -2 || point[1] <= -2 || point[1] >= 2)
+        if (point[0] >= options.right || point[0] <= options.left || point[1] <= options.bottom || point[1] >= options.top)
           continue
-        let xcoord = Math.round((point[0]+2) * options.width/4);
-        let ycoord = Math.round((point[1]+2) * options.height/4);
+        let xcoord = Math.round((point[0] - options.left) * options.width/widthDiff);
+        let ycoord = Math.round((point[1] - options.bottom) * options.height/heightDiff);
         if (xcoord < 0 || ycoord < 0 || xcoord + ycoord*options.width >= visits.length)
+        {
+          debugger;
           continue
+
+        }
         visits[xcoord + ycoord*options.width]++;
       }
     }

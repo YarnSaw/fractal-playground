@@ -11,65 +11,10 @@ function mandelbrot(canvas, iterations, power, a, b, c)
 
 function buddhabrot(canvas, iterations, power, a, b, c) 
 {
-  let top = 2
-  let bottom = -2
-  let left = -2
-  let right = 2
-
-  const width = canvas.width;
-  const height = canvas.height;
-  var visits = new Array(width*height).fill(0)
-
-  let trials = 1000000;
-
-  const workers = []
-  var workersComplete = 0;
-  for (let i = 0; i < cores; i++)
-  {
-    let worker = new Worker('worker.js');
-    worker.postMessage({
-      type: 'buddhabrot',
-      trials,
-      width,
-      height,
-      top,
-      bottom,
-      left,
-      right,
-      iterations,
-      power,
-      a,
-      b,
-      c
-    });
-
-    worker.onmessage = function(msg)
-    {
-      for (let i = 0; i < msg.data.length; i++)
-      {
-        visits[i] += msg.data[i]
-      }
-      worker.terminate();
-      workersComplete++
-
-      if (workersComplete == cores)
-      {
-        const ctx = canvas.getContext('2d');
-        const img = ctx.createImageData(canvas.width, canvas.height);
-
-        const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
-        for (let i = 0; i < visits.length; i++)
-        {
-          img.data[i*4] = 255*visits[i]/mostVisited;
-          img.data[i*4+1] = 0;
-          img.data[i*4+2] = 0;
-          img.data[i*4+3] = 255;
-        }
-        ctx.putImageData(img, 0, 0);
-      }
-    }
-
-  }  
+  if (navigator.userAgent.includes('Chrome'))
+    buddhabrot_local(canvas, iterations, power, a, b, c)
+  else
+    buddhabrot_worker(canvas, iterations, power, a, b, c)
 }
 
 function main()
