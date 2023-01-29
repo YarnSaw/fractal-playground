@@ -167,11 +167,7 @@ function buddhabrot(options)
         let xcoord = Math.round((point[0] - options.left) * options.width/widthDiff);
         let ycoord = Math.round((point[1] - options.bottom) * options.height/heightDiff);
         if (xcoord < 0 || ycoord < 0 || xcoord + ycoord*options.width >= visits.length)
-        {
-          debugger;
           continue
-
-        }
         visits[xcoord + ycoord*options.width]++;
       }
     }
@@ -179,6 +175,48 @@ function buddhabrot(options)
   postMessage(visits)
 }
 
+function newton(options)
+{
+  const endpoints = [];
+  let imgLocation = 0;
+  for (let h = options.top; h > options.bottom; h -= options.incrementPerPixelH)
+  {
+    for (let w = options.left; w < options.right; w += options.incrementPerPixelW)
+    {
+
+      let startPoint = [w, h]
+      let point = [w, h]
+
+      for (let iter = 0; iter < options.iterations; iter++)
+      {
+        let aTerm = multComplex(options.a, powComplex(point, 4));
+        let bTerm = multComplex(options.b, powComplex(point, 3));
+        let cTerm = multComplex(options.c, powComplex(point, 2));
+        let dTerm = multComplex(options.d, point); // linear
+        let eTerm = options.e // constant
+
+        let fx = addComplex(aTerm, addComplex(bTerm, addComplex(cTerm, addComplex(dTerm, eTerm))))
+
+        let apTerm = multComplex(options.derivation[0], powComplex(point, 3));
+        let bpTerm = multComplex(options.derivation[1], powComplex(point, 2));
+        let cpTerm = multComplex(options.derivation[2], point);
+        let dpTerm = options.derivation[3]; // linear
+        let fPrimex = addComplex(apTerm, addComplex(bpTerm, addComplex(cpTerm, dpTerm)))
+
+        let denominator = multComplex(fPrimex, [fPrimex[0], -fPrimex[1]])
+        let numerator = multComplex(fx, [fPrimex[0], -fPrimex[1]])
+
+        let factor = [numerator[0]/denominator[0], numerator[1]/denominator[0]]
+
+        point = [point[0] - factor[0], point[1] - factor[1]]
+      }
+
+      endpoints.push([startPoint, point, imgLocation]);
+      imgLocation++;
+    }
+  }
+  postMessage(endpoints);
+}
 
 
 onmessage = function main(msg) {
@@ -187,4 +225,6 @@ onmessage = function main(msg) {
     mandelbrot(msg.data);
   if (msg.data.type === 'buddhabrot')
     buddhabrot(msg.data)
+  if (msg.data.type === 'newton')
+    newton(msg.data)
 }

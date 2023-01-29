@@ -10,7 +10,6 @@ function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bott
   
   const span = (top - bottom)/cores
   const arraySize = width*Math.floor(4*height/cores)
-  const workers = []
 
   for (let i = 0; i < cores; i++)
   {

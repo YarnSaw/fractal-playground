@@ -6,9 +6,8 @@ function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bott
   const height = canvas.height;
   var visits = new Array(width*height).fill(0)
 
-  let trials = 100000;
+  let trials = 500000;
 
-  const workers = []
   var workersComplete = 0;
   for (let i = 0; i < cores; i++)
   {
@@ -46,7 +45,7 @@ function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bott
         const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
         for (let i = 0; i < visits.length; i++)
         {
-          img.data[i*4] = 255*visits[i]/mostVisited;
+          img.data[i*4] = 255*(visits[i]**0.5)/(mostVisited**0.5);
           img.data[i*4+1] = 0;
           img.data[i*4+2] = 0;
           img.data[i*4+3] = 255;
@@ -115,7 +114,7 @@ function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, botto
   const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
   for (let i = 0; i < visits.length; i++)
   {
-    img.data[i*4] = 255*visits[i]/mostVisited;
+    img.data[i*4] = 255*(visits[i]**0.5)/(mostVisited**0.5);
     img.data[i*4+1] = 0;
     img.data[i*4+2] = 0;
     img.data[i*4+3] = 255;

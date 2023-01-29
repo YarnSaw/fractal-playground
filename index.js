@@ -19,6 +19,11 @@ function buddhabrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
     buddhabrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 }
 
+function newton(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
+{
+  newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
+}
+
 function main()
 {
 
@@ -29,6 +34,7 @@ function main()
   const ctx = canvas.getContext('2d');
   // mandelbrot(canvas, 500, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2)
   // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2);
+  // newton(canvas, 50, [1,0], [1,0], [1,0], [1,0], [1,0], -2, 2, -2, 2)
 }
 
 function handleSubmit(e) {
