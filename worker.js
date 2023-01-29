@@ -131,7 +131,7 @@ function buddhabrot(options)
 
   const heightDiff = options.top - options.bottom
   const widthDiff = options.right - options.left
-  console.log(options.left, options.right, options.top, options.bottom, widthDiff, heightDiff)
+
   for (let i = 0; i < options.trials; i++)
   {
     let x1 = Math.random() * (heightDiff) + (options.bottom)

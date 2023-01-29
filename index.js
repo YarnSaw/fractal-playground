@@ -1,20 +1,22 @@
 
 var cores = navigator.hardwareConcurrency/2;
 
-function mandelbrot(canvas, iterations, power, a, b, c)
+function mandelbrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 {
-  if (navigator.userAgent.includes('Chrome'))
-    mandelbrot_local(canvas, iterations, power, a, b, c)
-  else
-    mandelbrot_worker(canvas, iterations, power, a, b, c)
+  // Uhhh chrome use to suck but doesn't really anymore. So don't really need local but keeping cus cus
+  // if (navigator.userAgent.includes('Chrome') || true)
+    // mandelbrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
+  // else
+    mandelbrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 }
 
-function buddhabrot(canvas, iterations, power, a, b, c) 
+function buddhabrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax) 
 {
-  if (navigator.userAgent.includes('Chrome'))
-    buddhabrot_local(canvas, iterations, power, a, b, c)
-  else
-    buddhabrot_worker(canvas, iterations, power, a, b, c)
+  // Uhhh chrome use to suck but doesn't really anymore. So don't really need local but keeping cus cus
+  // if (navigator.userAgent.includes('Chrome'))
+  //   buddhabrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
+  // else
+    buddhabrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 }
 
 function main()
@@ -25,30 +27,26 @@ function main()
 
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  // mandelbrot(canvas, 500, 2, [1,0], [1,0], [0,0])
-  buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0]);
+  // mandelbrot(canvas, 500, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2)
+  // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2);
 }
 
 function handleSubmit(e) {
   e.preventDefault();
   const canvas = document.getElementById('canvas');
   const fractalPattern = e.target.options[e.target.options.selectedIndex].value;
-  const power = parseFloat(e.target.power.value);
-  const a = parseFloat(e.target.a.value);
-  const b = parseFloat(e.target.b.value);
-  const c = parseFloat(e.target.c.value);
-  const ai = parseFloat(e.target.ai.value);
-  const bi = parseFloat(e.target.bi.value);
-  const ci = parseFloat(e.target.ci.value);
-  const xMin = e.target.xMin.value;
-  const xMax = e.target.xMax.value;
-  const yMin = e.target.yMin.value;
-  const yMax = e.target.yMax.value;
-  
-  console.log(power);
-  console.log(a);
-  console.log(b);
-  console.log(c);
+  const iterations = e.target.iterations.value === "" ? 100 : parseFloat(e.target.iterations.value);
+  const power = e.target.power.value === "" ? 2 : parseFloat(e.target.power.value);
+  const a = e.target.a.value === "" ? 1 : parseFloat(e.target.a.value);
+  const b = e.target.b.value === "" ? 1 : parseFloat(e.target.b.value);
+  const c = e.target.c.value === "" ? 0 : parseFloat(e.target.c.value);
+  const ai = e.target.ai.value === "" ? 0 : parseFloat(e.target.ai.value);
+  const bi = e.target.bi.value === "" ? 0 : parseFloat(e.target.bi.value);
+  const ci = e.target.ci.value === "" ? 0 : parseFloat(e.target.ci.value);
+  const xMin = e.target.xMin.value === "" ? -2 : parseFloat(e.target.xMin.value);
+  const xMax = e.target.xMax.value === "" ? 2 : parseFloat(e.target.xMax.value);
+  const yMin = e.target.yMin.value === "" ? -2 : parseFloat(e.target.yMin.value);
+  const yMax = e.target.yMax.value === "" ? 2 : parseFloat(e.target.yMax.value);
 
   switch (fractalPattern) {
     case "Mandelbrot":

@@ -1,13 +1,8 @@
 
 var cores = navigator.hardwareConcurrency/2;
 
-function mandelbrot_worker(canvas, iterations, power, a, b, c)
+function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {
-  let top = 2
-  let bottom = -2
-  let left = -2
-  let right = 2
-
   const width = canvas.width;
   const height = cores * Math.floor(canvas.height/cores); // shhhhhh no rounding problems
   const incrementPerPixelW = (right-left)/width;
@@ -57,14 +52,8 @@ function mandelbrot_worker(canvas, iterations, power, a, b, c)
 }
 
 
-function mandelbrot_local(canvas, iterations, power, a, b, c)
+function mandelbrot_local(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {
-
-  let top = 2
-  let bottom = -2
-  let left = -2
-  let right = 2
-
   // determine width/height, as well as what the step along the number line each pixel represents
   const width = canvas.width;
   const height = canvas.height;
