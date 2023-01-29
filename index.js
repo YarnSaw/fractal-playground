@@ -99,16 +99,22 @@ function handleSelectionChange() {
   const option = document.getElementById("options").value;
   switch (option) {
     case "Mandelbrot":
+      document.getElementsByClassName("color-select")[0].hidden = true;
+      document.getElementsByClassName("color-select")[1].hidden = true;
       document.getElementsByClassName("power")[0].hidden = false;
       document.getElementsByClassName("D")[0].hidden = true;
       document.getElementsByClassName("E")[0].hidden = true;
       break;
     case "Buddhabrot":
+      document.getElementsByClassName("color-select")[0].hidden = false;
+      document.getElementsByClassName("color-select")[1].hidden = false;
       document.getElementsByClassName("power")[0].hidden = false;
       document.getElementsByClassName("D")[0].hidden = true;
       document.getElementsByClassName("E")[0].hidden = true;
       break;
     case "Newton":
+      document.getElementsByClassName("color-select")[0].hidden = true;
+      document.getElementsByClassName("color-select")[1].hidden = true;
       document.getElementsByClassName("power")[0].hidden = true;
       document.getElementsByClassName("D")[0].hidden = false;
       document.getElementsByClassName("E")[0].hidden = false;
