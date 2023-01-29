@@ -10,13 +10,13 @@ function mandelbrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
     mandelbrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 }
 
-function buddhabrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax) 
+function buddhabrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color) 
 {
   // Uhhh chrome use to suck but doesn't really anymore. So don't really need local but keeping cus cus
   // if (navigator.userAgent.includes('Chrome'))
-  //   buddhabrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
+  //   buddhabrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
   // else
-    buddhabrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
+    buddhabrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
 }
 
 function newton(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
@@ -34,14 +34,15 @@ function main()
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   // mandelbrot(canvas, 500, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2)
-  // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2);
+  // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2, "Red");
   // newton(canvas, 50, [1,0], [1,0], [1,0], [1,0], [1,0], -2, 2, -2, 2)
 }
 
 function handleSubmit(event) {
   event.preventDefault();
   const canvas = document.getElementById('canvas');
-  const fractalPattern = event.target.options[event.target.options.selectedIndex].value;
+  const fractalPattern = event.target.options.value;
+  const color = event.target.colors.value;
   const iterations = event.target.iterations.value === "" ? 100 : parseFloat(event.target.iterations.value);
   const power = event.target.power.value === "" ? 2 : parseFloat(event.target.power.value);
   const a = event.target.a.value === "" ? 1 : parseFloat(event.target.a.value);
@@ -86,7 +87,7 @@ function handleSubmit(event) {
       mandelbrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       break;
     case "Buddhabrot":
-      buddhabrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+      buddhabrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
       break;
     case "Newton":
       newton(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
