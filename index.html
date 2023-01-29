@@ -17,9 +17,9 @@
   <header>
     <h1>Fractal Playground</h1>
   </header>
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-6 input-container">
+      <div class="col-6 px-5 input-container">
 
         <form id="generation-form">
           <h4>Options</h4>
@@ -108,15 +108,14 @@
             <div class="generation-input">
               <label>Aspect Ratio</label>
               <select name="aspect-ratio">
-                <option value="16:9">16:9</option>
                 <option value="Square">Square</option>
-                <option value="3:4">3:4</option>
+                <option value="16:9">16:9</option>
+                <option value="4:3">4:3</option>
               </select>
               <label>File Format</label>
               <select name="file-format">
                 <option value="PNG">PNG</option>
-                <option value="JPG">JPG</option>
-                <option value="SVG">SVG</option>
+                <option value="JPEG">JPG</option>
               </select>
             </div>
           </div>
@@ -125,7 +124,7 @@
           </div>
         </form>
       </div>
-      <div class="col-5 canvas-container">
+      <div class="col-6 canvas-container">
         <canvas id="canvas" width="500px" height="500px"></canvas>
         <button id="download" onclick="downloadImage()">Download</button>
       </div>

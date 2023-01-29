@@ -59,6 +59,28 @@ function handleSubmit(event) {
   const yMin = event.target.yMin.value === "" ? -2 : parseFloat(event.target.yMin.value);
   const yMax = event.target.yMax.value === "" ? 2 : parseFloat(event.target.yMax.value);
 
+  const aspectRatio = e.target['aspect-ratio'].value;
+  if (aspectRatio == "Square")
+  {
+    canvas.width = 500;
+    canvas.height = 500;
+  }
+  if (aspectRatio == '16:9')
+  {
+    canvas.width = 640
+    canvas.height = 360
+  }
+  if (aspectRatio == '4:3')
+  {
+    canvas.width = 500
+    canvas.height = 375
+  }
+  // debugger;
+
+  // clear the canvas before generating a new image
+  const context = canvas.getContext('2d');
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
   switch (fractalPattern) {
     case "Mandelbrot":
       mandelbrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
@@ -95,11 +117,12 @@ function handleSelectionChange() {
 
 function downloadImage() {
   console.log("download")
+  const imageType = document.getElementsByName("file-format")[0].value.toLowerCase();
   const canvas = document.getElementById("canvas");
-  const URL = canvas.toDataURL("image/png")
+  const URL = canvas.toDataURL(`image/${imageType}`)
   let a = document.createElement("a");
   a.href = URL
-  a.download = "fractal.svg";
+  a.download = `fractal.${imageType}`;
   a.click();
 }
 
