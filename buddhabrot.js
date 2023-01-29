@@ -1,6 +1,6 @@
 var cores = navigator.hardwareConcurrency/2;
 
-function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top) 
+function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top, color) 
 {
   const width = canvas.width;
   const height = canvas.height;
@@ -45,9 +45,9 @@ function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bott
         const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
         for (let i = 0; i < visits.length; i++)
         {
-          img.data[i*4] = 255*(visits[i]**0.5)/(mostVisited**0.5);
-          img.data[i*4+1] = 0;
-          img.data[i*4+2] = 0;
+          img.data[i*4] = color == "Red" || color == "Yellow" ? 255*(visits[i]**0.5)/(mostVisited**0.5) : 0;
+          img.data[i*4+1] = color == "Green" || color == "Yellow" ? 255*(visits[i]**0.5)/(mostVisited**0.5) : 0;
+          img.data[i*4+2] = color == "Blue" ? 255*(visits[i]**0.5)/(mostVisited**0.5) : 0;
           img.data[i*4+3] = 255;
         }
         ctx.putImageData(img, 0, 0);
@@ -57,7 +57,7 @@ function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bott
   }  
 }
 
-function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, bottom, top) 
+function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, bottom, top, color) 
 {
   const width = canvas.width;
   const height = canvas.height;
@@ -114,9 +114,9 @@ function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, botto
   const mostVisited = visits.reduce((a,b) => { return Math.max(a, b)});
   for (let i = 0; i < visits.length; i++)
   {
-    img.data[i*4] = 255*(visits[i]**0.5)/(mostVisited**0.5);
-    img.data[i*4+1] = 0;
-    img.data[i*4+2] = 0;
+    img.data[i*4] = color == "Red" || color == "Yellow" ? 255*(visits[i]**0.5)/(mostVisited**0.5) : 0;
+    img.data[i*4+1] = color == "Green" || color == "Yellow" ? 255*(visits[i]**0.5)/(mostVisited**0.5) : 0;
+    img.data[i*4+2] = color == "Blue" ? 255*(visits[i]**0.5)/(mostVisited**0.5) : 0;
     img.data[i*4+3] = 255;
   }
   ctx.putImageData(img, 0, 0);
