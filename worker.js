@@ -59,35 +59,38 @@ function HSVtoRGB(h, s, v) {
 
 function mandelbrot(options)
 {
-  const a = options.a
-  const b = options.b
-  const c = options.c
-  const power = options.power
-  const incrementPerPixelH = options.incrementPerPixelH
-  const incrementPerPixelW = options.incrementPerPixelW
-  const top = options.top
-  const bottom = options.bottom
-  const left = options.left
-  const right = options.right
-  const iterations = options.iterations
+  const a = options.a;
+  const b = options.b;
+  const c = options.c;
+  const power = options.power;
+  const top = options.top;
+  const bottom = options.bottom;
+  const left = options.left;
+  const right = options.right;
+  const iterations = options.iterations;
+  const width = options.width;
+  const height = options.height;
 
-  const img = new Uint8Array(options.arraySize)
-  const start = Date.now()
+  const img = new Uint8Array(width*height*4);
 
-  let ind = 0;
-  let imgLocation = 0;
-  for (let h = top; h > bottom; h -= incrementPerPixelH)
+  const incrementPerPixelW = (right-left)/width;
+  const incrementPerPixelH = (top-bottom)/height;
+
+  // console.log(height, width)
+  // console.log(top, bottom, left, right)
+  for (let h = 0; h < height; h += 1)
   {
-    for (let w = left; w < right; w += incrementPerPixelW)
+    for (let w = 0; w < width; w += 1)
     {
-      const startPoint = [w,h];
-      let currentPoint = [w,h];
+      const x = incrementPerPixelW*w - right
+      const y = incrementPerPixelH*h - top
+      const startPoint = [x,y];
+      let currentPoint = [x,y];
 
       let neededIter = NaN;
       // currently image is all black or white for in/out respectively
       for (let iter = 0; iter < iterations; iter++)
       {
-        ind++;
         // the full mandelbrot equations
         let firstTerm = multComplex(a, powComplex(currentPoint, power));
         let secondTerm = multComplex(b, startPoint);
@@ -101,24 +104,22 @@ function mandelbrot(options)
 
         }
       }
-
       if (Number.isNaN(neededIter))
       {
-        img[imgLocation*4]   = 0;
-        img[imgLocation*4+1] = 0;
-        img[imgLocation*4+2] = 0;
-        img[imgLocation*4+3] = 255;
+        img[(h*width + w) * 4]   = 0;
+        img[(h*width + w) *4+1] = 0;
+        img[(h*width + w) *4+2] = 0;
+        img[(h*width + w) *4+3] = 255;
       }
       else
       {
         let hue = (neededIter**0.5)/(iterations**0.5);
         let color = HSVtoRGB(hue, 1, 1);
-        img[imgLocation*4]   = color[0];
-        img[imgLocation*4+1] = color[1];
-        img[imgLocation*4+2] = color[2];
-        img[imgLocation*4+3] = 255;
+        img[(h*width + w) *4]   = color[0];
+        img[(h*width + w) *4+1] = color[1];
+        img[(h*width + w) *4+2] = color[2];
+        img[(h*width + w) *4+3] = 255;
       }
-      imgLocation++;
     }
   }
 

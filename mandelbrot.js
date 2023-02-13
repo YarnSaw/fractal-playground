@@ -4,28 +4,29 @@ var cores = navigator.hardwareConcurrency/2;
 function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {
   const width = canvas.width;
-  const height = cores * Math.floor(canvas.height/cores); // shhhhhh no rounding problems
-  const incrementPerPixelW = (right-left)/width;
-  const incrementPerPixelH = (top-bottom)/height;
-  
-  const span = (top - bottom)/cores
-  const arraySize = width*Math.floor(4*height/cores)
+  const height = canvas.height;
+
+  const perWorkerHeight = Math.floor(height/cores);
+  const perWorkerImaginarySegment = (top - bottom)/cores;
 
   for (let i = 0; i < cores; i++)
   {
-    bottom = top-span;
+    let workerBottom = top-perWorkerImaginarySegment;
+
+    // If we can't perfectly split our image by our core count, add the extra couple rows to the last segment
+    if ((i == cores - 1) && height % cores) 
+      workerBottom = bottom;
 
     let workerNumber = i;
     let worker = new Worker('worker.js');
     worker.postMessage({
       type: 'mandelbrot',
-      arraySize,
       top,
-      bottom,
+      bottom: workerBottom,
       left,
       right,
-      incrementPerPixelW,
-      incrementPerPixelH,
+      width,
+      height: (i == cores - 1) ? perWorkerHeight + height % cores : perWorkerHeight,
       iterations,
       power,
       a,
@@ -33,11 +34,12 @@ function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bott
       c
     });
 
-    const workerHeight = height/cores
+    const workerHeight = perWorkerHeight;
     worker.onmessage = function(msg)
     {
       const ctx = canvas.getContext('2d');
-      const img = ctx.createImageData(canvas.width, workerHeight);
+
+      const img = ctx.createImageData(canvas.width, (i == cores - 1) ? perWorkerHeight + height % cores : perWorkerHeight);
       for (let i = 0; i < msg.data.length; i++)
       {
         img.data[i] = msg.data[i]
@@ -46,7 +48,7 @@ function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bott
       worker.terminate();
     }
 
-    top -= span;
+    top -= perWorkerImaginarySegment;
   }  
 }
 
@@ -62,14 +64,14 @@ function mandelbrot_local(canvas, iterations, power, a, b, c, left, right, botto
   // get image to modify
   const ctx = canvas.getContext('2d');
   const img = ctx.createImageData(canvas.width, canvas.height);
-  let imgLocation = 0;
-  for (let h = top; h > bottom; h -= incrementPerPixelH)
+  for (let h = 0; h < height; h += 1)
   {
-    for (let w = left; w < right; w += incrementPerPixelW)
+    for (let w = 0; w < width; w += 1)
     {
-      imgLocation++;
-      const startPoint = [w,h];
-      let currentPoint = [w,h];
+      const x = incrementPerPixelW*w + left
+      const y = incrementPerPixelH*h + bottom
+      const startPoint = [x,y];
+      let currentPoint = [x,y];
 
       let neededIter = NaN;
       // currently image is all black or white for in/out respectively
@@ -91,19 +93,19 @@ function mandelbrot_local(canvas, iterations, power, a, b, c, left, right, botto
 
       if (Number.isNaN(neededIter))
       {
-        img.data[imgLocation*4]   = 0;
-        img.data[imgLocation*4+1] = 0;
-        img.data[imgLocation*4+2] = 0;
-        img.data[imgLocation*4+3] = 255;
+        img.data[(h*width + w) * 4]   = 0;
+        img.data[(h*width + w) *4+1] = 0;
+        img.data[(h*width + w) *4+2] = 0;
+        img.data[(h*width + w) *4+3] = 255;
       }
       else
       {
         let hue = (neededIter**0.5)/(iterations**0.5);
         let color = HSVtoRGB(hue, 1, 1);
-        img.data[imgLocation*4]   = color[0];
-        img.data[imgLocation*4+1] = color[1];
-        img.data[imgLocation*4+2] = color[2];
-        img.data[imgLocation*4+3] = 255;
+        img.data[(h*width + w) *4]   = color[0];
+        img.data[(h*width + w) *4+1] = color[1];
+        img.data[(h*width + w) *4+2] = color[2];
+        img.data[(h*width + w) *4+3] = 255;
       }
       
     }
