@@ -60,6 +60,15 @@ label {
     justify-content: center;
 }
 
+math {
+  font-size: 25px;
+}
+
+.math {
+  width: 40px;
+  appearance: textfield;
+}
+
 #canvas {
     border: 5px solid black;
 }
@@ -73,4 +82,8 @@ label {
     border-radius: 5%;
     background-color: navy;
     color: lightgray;
+}
+
+#newton {
+  display: none;
 }

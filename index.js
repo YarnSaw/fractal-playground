@@ -43,22 +43,50 @@ function handleSubmit(event) {
   const canvas = document.getElementById('canvas');
   const fractalPattern = event.target.options.value;
   const color = event.target.colors.value;
-  const iterations = event.target.iterations.value === "" ? 100 : parseFloat(event.target.iterations.value);
-  const power = event.target.power.value === "" ? 2 : parseFloat(event.target.power.value);
-  const a = event.target.a.value === "" ? 1 : parseFloat(event.target.a.value);
-  const b = event.target.b.value === "" ? 1 : parseFloat(event.target.b.value);
-  const c = event.target.c.value === "" ? 0 : parseFloat(event.target.c.value);
-  const d = event.target.d.value === "" ? 0 : parseFloat(event.target.d.value);
-  const e = event.target.e.value === "" ? 0 : parseFloat(event.target.e.value);
-  const ai = event.target.ai.value === "" ? 0 : parseFloat(event.target.ai.value);
-  const bi = event.target.bi.value === "" ? 0 : parseFloat(event.target.bi.value);
-  const ci = event.target.ci.value === "" ? 0 : parseFloat(event.target.ci.value);
-  const di = event.target.di.value === "" ? 0 : parseFloat(event.target.di.value);
-  const ei = event.target.ei.value === "" ? 0 : parseFloat(event.target.ei.value);
-  const xMin = event.target.xMin.value === "" ? -2 : parseFloat(event.target.xMin.value);
-  const xMax = event.target.xMax.value === "" ? 2 : parseFloat(event.target.xMax.value);
-  const yMin = event.target.yMin.value === "" ? -2 : parseFloat(event.target.yMin.value);
-  const yMax = event.target.yMax.value === "" ? 2 : parseFloat(event.target.yMax.value);
+
+  for (let ev of event.target)
+  {
+    if (ev.type == "number" && Number.isNaN(parseFloat(ev.value)))
+    {
+      debugger
+      alert("Unable to generate image with non-float value set");
+      return;
+    }
+  }
+
+  const iterations = parseFloat(event.target.iterations.value);
+
+  var a,ai,b,bi,c,ci,d,di,e,ei, power, xMin, xMax, yMin, yMax;
+
+  if (fractalPattern == "Newton")
+  {
+    power = parseFloat(event.target.power.value);
+    a = parseFloat(event.target.N_a.value);
+    b = parseFloat(event.target.N_b.value);
+    c = parseFloat(event.target.N_c.value);
+    d = parseFloat(event.target.N_d.value);
+    e = parseFloat(event.target.N_e.value);
+    ai = parseFloat(event.target.N_ai.value);
+    bi = parseFloat(event.target.N_bi.value);
+    ci = parseFloat(event.target.N_ci.value);
+    di = parseFloat(event.target.N_di.value);
+    ei = parseFloat(event.target.N_ei.value);
+  }
+  else
+  {
+    power = parseFloat(event.target.power.value);
+    a = parseFloat(event.target.a.value);
+    b = parseFloat(event.target.b.value);
+    c = parseFloat(event.target.c.value);
+    ai = parseFloat(event.target.ai.value);
+    bi = parseFloat(event.target.bi.value);
+    ci = parseFloat(event.target.ci.value);
+  }
+  
+  xMin = parseFloat(event.target.xMin.value);
+  xMax = parseFloat(event.target.xMax.value);
+  yMin = parseFloat(event.target.yMin.value);
+  yMax = parseFloat(event.target.yMax.value);
 
   const aspectRatio = event.target['aspect-ratio'].value;
   if (aspectRatio == "Square")
@@ -101,23 +129,20 @@ function handleSelectionChange() {
     case "Mandelbrot":
       document.getElementsByClassName("color-select")[0].hidden = true;
       document.getElementsByClassName("color-select")[1].hidden = true;
-      document.getElementsByClassName("power")[0].hidden = false;
-      document.getElementsByClassName("D")[0].hidden = true;
-      document.getElementsByClassName("E")[0].hidden = true;
+      document.getElementById("brot").style.display = "inherit";
+      document.getElementById("newton").style.display = "none";
       break;
     case "Buddhabrot":
       document.getElementsByClassName("color-select")[0].hidden = false;
       document.getElementsByClassName("color-select")[1].hidden = false;
-      document.getElementsByClassName("power")[0].hidden = false;
-      document.getElementsByClassName("D")[0].hidden = true;
-      document.getElementsByClassName("E")[0].hidden = true;
+      document.getElementById("brot").style.display = "inherit";
+      document.getElementById("newton").style.display = "none";
       break;
     case "Newton":
       document.getElementsByClassName("color-select")[0].hidden = true;
       document.getElementsByClassName("color-select")[1].hidden = true;
-      document.getElementsByClassName("power")[0].hidden = true;
-      document.getElementsByClassName("D")[0].hidden = false;
-      document.getElementsByClassName("E")[0].hidden = false;
+      document.getElementById("brot").style.display = "none";
+      document.getElementById("newton").style.display = "inherit";
       break;
   }
 }

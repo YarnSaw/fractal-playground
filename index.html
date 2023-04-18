@@ -42,66 +42,135 @@
             <h5>Tunables</h5>
             <div class="tunable-input">
               <label>Iterations</label>
-              <input type="number" name="iterations" step="1">
+              <input type="number" name="iterations" step="1" value="100">
             </div>
-            <div class="tunable-input power">
-              <label>Power</label>
-              <input type="number" name="power" step="0.1">
-            </div>
-            <div class="tunable-input A">
-              <label>A</label>
-              <div class="complex-input">
-                <input type="number" name="a" step="0.1">
-                + i
-                <input type="number" name="ai" step="0.1">
-              </div>
-            </div>
-            <div class="tunable-input B">
-              <label>B</label>
-              <div class="complex-input">
-                <input type="number" name="b" step="0.1">
-                + i
-                <input type="number" name="bi" step="0.1">
-              </div>
-            </div>
-            <div class="tunable-input C">
-              <label>C</label>
-              <div class="complex-input">
-                <input type="number" name="c" step="0.1">
-                + i
-                <input type="number" name="ci" step="0.1">
-              </div>
-            </div>
-            <div class="tunable-input D" hidden>
-              <label>D</label>
-              <div class="complex-input">
-                <input type="number" name="d" step="0.1">
-                + i
-                <input type="number" name="di" step="0.1">
-              </div>
-            </div>
-            <div class="tunable-input E" hidden>
-              <label>E</label>
-              <div class="complex-input">
-                <input type="number" name="e" step="0.1">
-                + i
-                <input type="number" name="ei" step="0.1">
-              </div>
+
+            <div>
+              <math id="brot" display="block">
+                <msub>
+                  <mi>X</mi>
+                  <mn>n+1</mn>
+                </msub>
+                <mo>=</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="a" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="ai" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+                <mo>*</mo>
+                <mmultiscripts>
+                  <mi>X</mi>
+                  <mn>n</mn>
+                  <mn> <input class="math" type="number" name="power" step="0.1" value="2"> </mn>
+                </mmultiscripts>
+                <mo>+</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="b" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="bi" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+                <mo>*</mo>
+                <msub>
+                  <mi>X</mi>
+                  <mn>1</mn>
+                </msub>
+                <mo>+</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="c" step="0.1" value=0>
+                  +
+                  <input class="math" type="number" name="ci" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+              </math>
+
+              <math id="newton" display="block">
+                  <mi>F (x)</mi>
+                <mo>=</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="N_a" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="N_ai" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+                <mo>*</mo>
+                <msup>
+                  <mi>x</mi>
+                  <mn>4</mn>
+                </msup>
+                <mo>+</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="N_b" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="N_bi" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+                <mo>*</mo>
+                <msup>
+                  <mi>x</mi>
+                  <mn>3</mn>
+                </msup>
+                <mo>+</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="N_c" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="N_ci" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+                <mo>*</mo>
+                <msup>
+                  <mi>x</mi>
+                  <mn>2</mn>
+                </msup>
+                <mo>+</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="N_d" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="N_di" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+                <mo>*</mo>
+                  <mi>x</mi>
+                <mo>+</mo>
+                <mn> 
+                  (
+                  <input class="math" type="number" name="N_e" step="0.1" value=1>
+                  +
+                  <input class="math" type="number" name="N_ei" step="0.1" value=0>
+                  i
+                  )
+                </mn>
+              </math>
             </div>
           </div>
           <div class="dimension-container">
             <h5>Dimensions</h5>
             <div class="size-limit">
               <label>xMin</label>
-              <input type="number" name="xMin">
+              <input type="number" name="xMin" value="-2">
               <label>xMax</label>
-              <input type="number" name="xMax">
+              <input type="number" name="xMax" value="2">
             </div>
             <div class="size-limit">
               <label>yMin</label>
-              <input type="number" name="yMin">
+              <input type="number" name="yMin" value="-2">
               <label>yMax</label>
-              <input type="number" name="yMax">
+              <input type="number" name="yMax" value="2">
             </div>
           </div>
           <div class="generation-container">
@@ -128,17 +197,6 @@
       <div class="col-6 canvas-container">
         <canvas id="canvas" width="500px" height="500px"></canvas>
         <button id="download" onclick="downloadImage()">Download</button>
-      </div>
-    </div>
-
-  </div>
-  <div class="container">
-    <div class="row align-self-center">
-      <div class="col-3">
-        Mandelbrot and Buddhabrot equation: x_{n+1} = a*x_n^{power} + b*x_1 + c
-      </div>
-      <div class="col-3">
-        Newton's Fractal equation:<br> f(x) = a*x^4 + b*x^3 + c*x^2 + d*x + e
       </div>
     </div>
   </div>
