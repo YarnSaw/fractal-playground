@@ -11,6 +11,7 @@ h4 {
 
 label {
     font-weight: bold;
+    padding-right: 10px;
 }
 
 math {
@@ -52,7 +53,6 @@ math {
 
 .generation-input {
     display: flex;
-    justify-content: space-between;
 }
 
 .generate-button-container {
@@ -66,7 +66,10 @@ math {
 }
 
 #canvas {
-    border: 5px solid black;
+  width: 1000px;
+  height: 1000px;
+  border: 5px solid black;
+  padding: 0;
 }
 
 #download,
@@ -78,8 +81,4 @@ math {
     border-radius: 5%;
     background-color: navy;
     color: lightgray;
-}
-
-#newton {
-  display: none;
 }

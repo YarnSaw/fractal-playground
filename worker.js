@@ -1,4 +1,4 @@
-importScripts('math.js', 'complex.js')
+importScripts('math.js')
 
 /**
  * Complex addition. Really simple
@@ -82,8 +82,8 @@ function mandelbrot(options)
   {
     for (let w = 0; w < width; w += 1)
     {
-      const x = incrementPerPixelW*w - right
-      const y = incrementPerPixelH*h - top
+      const x = incrementPerPixelW*w + left;
+      const y = incrementPerPixelH*h - top;
       const startPoint = [x,y];
       let currentPoint = [x,y];
 

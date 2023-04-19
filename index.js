@@ -1,21 +1,18 @@
 
 var cores = navigator.hardwareConcurrency/2;
+var yMin, yMax, xMin, xMax;
+yMin = xMin = -1.5;
+yMax = xMax =  1.5;
 
 function mandelbrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 {
-  // Uhhh chrome use to suck but doesn't really anymore. So don't really need local but keeping cus cus
-  // if (navigator.userAgent.includes('Chrome') || true)
     // mandelbrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
-  // else
     mandelbrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
 }
 
 function buddhabrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color) 
 {
-  // Uhhh chrome use to suck but doesn't really anymore. So don't really need local but keeping cus cus
-  // if (navigator.userAgent.includes('Chrome'))
-  //   buddhabrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
-  // else
+    // buddhabrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
     buddhabrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
 }
 
@@ -56,7 +53,7 @@ function handleSubmit(event) {
 
   const iterations = parseFloat(event.target.iterations.value);
 
-  var a,ai,b,bi,c,ci,d,di,e,ei, power, xMin, xMax, yMin, yMax;
+  var a,ai,b,bi,c,ci,d,di,e,ei, power;
 
   if (fractalPattern == "Newton")
   {
@@ -71,6 +68,10 @@ function handleSubmit(event) {
     ci = parseFloat(event.target.N_ci.value);
     di = parseFloat(event.target.N_di.value);
     ei = parseFloat(event.target.N_ei.value);
+    xMin = parseFloat(event.target.xMin.value);
+    xMax = parseFloat(event.target.xMax.value);
+    yMin = parseFloat(event.target.yMin.value);
+    yMax = parseFloat(event.target.yMax.value);
   }
   else
   {
@@ -81,30 +82,8 @@ function handleSubmit(event) {
     ai = parseFloat(event.target.ai.value);
     bi = parseFloat(event.target.bi.value);
     ci = parseFloat(event.target.ci.value);
+    newAspectRatio(); // Make sure aspect ratio is correct according to what was selected.
   }
-  
-  xMin = parseFloat(event.target.xMin.value);
-  xMax = parseFloat(event.target.xMax.value);
-  yMin = parseFloat(event.target.yMin.value);
-  yMax = parseFloat(event.target.yMax.value);
-
-  const aspectRatio = event.target['aspect-ratio'].value;
-  if (aspectRatio == "Square")
-  {
-    canvas.width = 500;
-    canvas.height = 500;
-  }
-  if (aspectRatio == '16:9')
-  {
-    canvas.width = 640
-    canvas.height = 360
-  }
-  if (aspectRatio == '4:3')
-  {
-    canvas.width = 500
-    canvas.height = 375
-  }
-  // debugger;
 
   // clear the canvas before generating a new image
   const context = canvas.getContext('2d');
@@ -127,23 +106,81 @@ function handleSelectionChange() {
   const option = document.getElementById("options").value;
   switch (option) {
     case "Mandelbrot":
-      document.getElementsByClassName("color-select")[0].hidden = true;
-      document.getElementsByClassName("color-select")[1].hidden = true;
-      document.getElementById("brot").style.display = "inherit";
-      document.getElementById("newton").style.display = "none";
+      Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.setAttribute("hidden", ""));
+      Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
+      Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.removeAttribute("hidden"));
       break;
     case "Buddhabrot":
-      document.getElementsByClassName("color-select")[0].hidden = false;
-      document.getElementsByClassName("color-select")[1].hidden = false;
-      document.getElementById("brot").style.display = "inherit";
-      document.getElementById("newton").style.display = "none";
+      Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
+      Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
+      Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.removeAttribute("hidden"));
       break;
     case "Newton":
-      document.getElementsByClassName("color-select")[0].hidden = true;
-      document.getElementsByClassName("color-select")[1].hidden = true;
-      document.getElementById("brot").style.display = "none";
-      document.getElementById("newton").style.display = "inherit";
+      document.getElementById("ratio").value = "1000x1000";
+      newAspectRatio(); // size of the canvas is 1000x1000 for netwons. Future: allow non-square
+                              // will need some way to handle not stretching the image when it's not a square
+      Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
+      Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.setAttribute("hidden", ""));
+      Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.removeAttribute("hidden"));
       break;
+  }
+}
+
+function newAspectRatio() {
+  const canvas = document.getElementById('canvas');
+  const ratio = document.getElementById("ratio").value;
+  // Hard coded values to be used for mandelbrot. This set usually falls within
+  // the area around 0,0 even when changed, these reflect that.
+  // May want a user override for these later, since some sets may not fit this pattern,
+  // but this is good for now.
+  switch (ratio)
+  {
+    case "720x576":
+      yMin = -1.5;
+      yMax =  1.5;
+      xMin =   -2;
+      xMax = 1.75;
+      canvas.style.width = "720px";
+      canvas.style.height = "576px";
+      canvas.width = 720;
+      canvas.height = 576;
+      break;
+    case "1024x768":
+      yMin = -1.5;
+      yMax =  1.5;
+      xMin =   -2;
+      xMax =    2;
+      canvas.style.width = "1024px";
+      canvas.style.height = "768px";
+      canvas.width = 1024;
+      canvas.height = 768;
+      break;
+    case "1000x1000":
+      yMin = xMin = -2;
+      yMax = xMax =  2;
+      canvas.width = canvas.height = 1000;
+      canvas.style.width = canvas.style.height = "1000px";
+      break;
+    case "1280x720":
+      yMin = -1.6175;
+      yMax =  1.6175;
+      xMin =   -3.375;
+      xMax = 2.375;
+      canvas.style.width = "1280px";
+      canvas.style.height = "720px";
+      canvas.width = 1280;
+      canvas.height = 720;
+      break;
+    case "1920x1080":
+      yMin = -1.1175;
+      yMax =  2.1175;
+      xMin =  -3.375;
+      xMax =   2.375;
+      canvas.style.width = "1920px";
+      canvas.style.height = "1080px";
+      canvas.width = 1920;
+      canvas.height = 1080;
+      break
   }
 }
 

@@ -30,8 +30,8 @@
               <option value="Buddhabrot">Buddhabrot</option>
               <option value="Newton">Newton's Fractal</option>
             </select>
-            <label class="color-select" hidden>Color Scheme</label>
-            <select name="colors" class="color-select" hidden>
+            <label class="buddhabrot" hidden>Color Scheme</label>
+            <select name="colors" class="buddhabrot" hidden>
               <option value="Red">Red</option>
               <option value="Green">Green</option>
               <option value="Blue">Blue</option>
@@ -39,9 +39,9 @@
             </select>
           </div>
           <div class="tunables-container">
-            <h5>Tunables</h5>
+            <h5>Function</h5>
             <div>
-              <math id="brot" display="block">
+              <math class="mandelbrot buddhabrot" display="block">
                 <msub>
                   <mi>X</mi>
                   <mn>n+1</mn>
@@ -86,7 +86,7 @@
                 </mn>
               </math>
 
-              <math id="newton" display="block">
+              <math class="newton" display="block" hidden>
                   <mi>F (x)</mi>
                 <mo>=</mo>
                 <mn> 
@@ -157,7 +157,7 @@
             <label>Iterations</label>
             <input type="number" name="iterations" step="1" value="100">
           </div>
-          <div class="dimension-container">
+          <div class="dimension-container newton" hidden>
             <h5>Dimensions</h5>
             <div class="size-limit">
               <label>xMin</label>
@@ -175,17 +175,22 @@
           <div class="generation-container">
             <h5>Generation Settings</h5>
             <div class="generation-input">
-              <label>Aspect Ratio</label>
-              <select name="aspect-ratio">
-                <option value="Square">Square</option>
-                <option value="16:9">16:9</option>
-                <option value="4:3">4:3</option>
+              <label>Method</label>
+              <select class="me-4" name="generation-type">
+                <option value="single">Vanilla (Single threaded)</option>
+                <option value="thread" selected>Using Web Workers (Threaded)</option>
+                <option value="dcp">Using DCP (Many computers)</option>
               </select>
-              <label>File Format</label>
-              <select name="file-format">
-                <option value="PNG">PNG</option>
-                <option value="JPEG">JPG</option>
-              </select>
+              <div class="mandelbrot buddhabrot">
+                <label>Aspect Ratio</label>
+                <select id="ratio" name="Image Size" onchange="newAspectRatio()">
+                  <option value="720x576">720x576</option>
+                  <option value="1024x768">1024x768</option>
+                  <option value="1000x1000" selected>1000x1000</option>
+                  <option value="1280x720">1280x720</option>
+                  <option value="1920x1080">1920x1080</option>
+                </select>  
+              </div>
             </div>
           </div>
           <div class="generate-button-container">
@@ -194,7 +199,20 @@
         </form>
       </div>
       <div class="col-6 canvas-container">
-        <canvas id="canvas" width="500px" height="500px"></canvas>
+        <!-- Explanations of the different sets -->
+        Going to explain what each of the sets is all about here.
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <canvas id="canvas" width=1000 height=1000></canvas>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-6" align="center">
+        <label>File Format</label>
+        <select name="file-format">
+          <option value="PNG">PNG</option>
+          <option value="JPEG">JPG</option>
+        </select>
         <button id="download" onclick="downloadImage()">Download</button>
       </div>
     </div>

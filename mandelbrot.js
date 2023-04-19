@@ -69,7 +69,7 @@ function mandelbrot_local(canvas, iterations, power, a, b, c, left, right, botto
     for (let w = 0; w < width; w += 1)
     {
       const x = incrementPerPixelW*w + left
-      const y = incrementPerPixelH*h + bottom
+      const y = incrementPerPixelH*h - top
       const startPoint = [x,y];
       let currentPoint = [x,y];
 
