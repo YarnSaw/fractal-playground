@@ -30,9 +30,7 @@ function main()
 
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
-  // mandelbrot(canvas, 500, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2)
-  // buddhabrot(canvas, 100, 2, [1,0], [1,0], [0,0], -2, 2, -2, 2, "Red");
-  // newton(canvas, 50, [1,0], [1,0], [1,0], [1,0], [1,0], -2, 2, -2, 2)
+  handleSelectionChange();
 }
 
 function handleSubmit(event) {
@@ -45,7 +43,6 @@ function handleSubmit(event) {
   {
     if (ev.type == "number" && Number.isNaN(parseFloat(ev.value)))
     {
-      debugger
       alert("Unable to generate image with non-float value set");
       return;
     }
