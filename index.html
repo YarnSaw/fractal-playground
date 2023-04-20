@@ -200,7 +200,69 @@
       </div>
       <div class="col-6 canvas-container">
         <!-- Explanations of the different sets -->
-        Going to explain what each of the sets is all about here.
+        <div class="mandelbrot">
+          <h2 class="text-center">The mandelbrot set</h2>
+          <p>
+            The mandelbrot is a fractal defined by the function
+          </p>
+          <math>
+            <msub>
+              <mi>X</mi>
+              <mn>n+1</mn>
+            </msub>
+            <mo>=</mo>
+            <mmultiscripts>
+              <mi>X</mi>
+              <mn>n</mn>
+              <mn>2</mn>
+            </mmultiscripts>
+            <mo>+</mo>
+            <msub>
+              <mi>X</mi>
+              <mn>1</mn>
+            </msub>
+          </math>
+          <p>
+            over the set of complex numbers. The set contains all numbers that do not diverge to infinity when iterated. Black pixels are part
+            of the set, with other colors being determined by how long it took each point to be considered diverged to infinity.
+            The variation of the set that can be generated in the fractal playground allows you to change nearly everything in the equation,
+            from multiplying the main term by some factor at each iteration, to adding a constant term. 
+          </p>
+          <p>
+            Some interesting patterns to try are slowely incrementing the power from 2 to 3, at increments of 0.1. Or, change the power to be
+            negative for a massive change! Or you can rotate the set by multiplying the first term by 1i.
+          </p>
+        </div>
+        <div class="buddhabrot" hidden>
+          <h2 class="text-center">The buddhabrot set</h2>
+          <p>
+            The buddhabrot is a fractal defined by the function
+          </p>
+          <math>
+            <msub>
+              <mi>X</mi>
+              <mn>n+1</mn>
+            </msub>
+            <mo>=</mo>
+            <mmultiscripts>
+              <mi>X</mi>
+              <mn>n</mn>
+              <mn>2</mn>
+            </mmultiscripts>
+            <mo>+</mo>
+            <msub>
+              <mi>X</mi>
+              <mn>1</mn>
+            </msub>
+          </math>
+          <p>
+            over the set of complex numbers. The function is the same as the mandelbrot set, however the way it's used is different: 
+            the buddhabrot set is a map of the path taken for all points that eventually escape to infinity within the mandelbrot set.
+            Brighter colors means that particular point was visited more often as points escape, while black pixels were never passed through.
+            The same modifications that could be done to the mandelbrot set can be done to this set, and changes have very similar effects
+            to the structure of image when compared to the mandelbrot set. 
+          </p>
+        </div>
       </div>
     </div>
     <div class="row justify-content-center">
