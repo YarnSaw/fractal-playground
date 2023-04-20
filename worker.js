@@ -123,7 +123,7 @@ function mandelbrot(options)
     }
   }
 
-  postMessage(img)
+  return img;
 }
 
 function buddhabrot(options)
@@ -173,7 +173,7 @@ function buddhabrot(options)
       }
     }
   }
-  postMessage(visits)
+  return visits;
 }
 
 function newton(options)
@@ -216,16 +216,18 @@ function newton(options)
       imgLocation++;
     }
   }
-  postMessage(endpoints);
+  return endpoints;
 }
 
 
 onmessage = function main(msg) {
   // msg.data is what I care about
+  let results;
   if (msg.data.type === 'mandelbrot')
-    mandelbrot(msg.data);
+    results = mandelbrot(msg.data);
   if (msg.data.type === 'buddhabrot')
-    buddhabrot(msg.data)
+    results = buddhabrot(msg.data)
   if (msg.data.type === 'newton')
-    newton(msg.data)
+    results = newton(msg.data)
+  postMessage(results);
 }
