@@ -86,7 +86,7 @@ function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, botto
       let secondTerm = multComplex(b, startPoint);
       currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
 
-      if (Math.abs(currentPoint[0]) > 4 || Math.abs(currentPoint[1]) > 4)
+      if (currentPoint[0]**2 + currentPoint[1]**2 > 9)
       {
         toInfinity = true;
         break;

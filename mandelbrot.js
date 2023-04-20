@@ -83,11 +83,10 @@ function mandelbrot_local(canvas, iterations, power, a, b, c, left, right, botto
         currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
         
         // if point is outside a certain bound, it's not in the set
-        if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
+        if (currentPoint[0]**2 + currentPoint[1]**2 > 9)
         {
           neededIter = iter;
           break;
-
         }
       }
 

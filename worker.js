@@ -97,7 +97,7 @@ function mandelbrot(options)
         currentPoint = addComplex(addComplex(firstTerm, secondTerm), c);
         
         // if point is outside a certain bound, it's not in the set
-        if (Math.abs(currentPoint[0]) > 2 || Math.abs(currentPoint[1]) > 2)
+        if (currentPoint[0]**2 + currentPoint[1]**2 > 9)
         {
           neededIter = iter;
           break;
@@ -149,7 +149,7 @@ function buddhabrot(options)
       let secondTerm = multComplex(options.b, startPoint);
       currentPoint = addComplex(addComplex(firstTerm, secondTerm), options.c);
 
-      if (Math.abs(currentPoint[0]) > 4 || Math.abs(currentPoint[1]) > 4)
+      if (currentPoint[0]**2 + currentPoint[1]**2 > 9)
       {
         toInfinity = true;
         break;
