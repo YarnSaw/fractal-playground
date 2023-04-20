@@ -4,24 +4,6 @@ var yMin, yMax, xMin, xMax;
 yMin = xMin = -1.5;
 yMax = xMax =  1.5;
 
-function mandelbrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
-{
-    // mandelbrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
-    mandelbrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax)
-}
-
-function buddhabrot(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color) 
-{
-    // buddhabrot_local(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
-    buddhabrot_worker(canvas, iterations, power, a, b, c, xMin, xMax, yMin, yMax, color)
-}
-
-function newton(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
-{
-  // newton_local(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
-  newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
-}
-
 function main()
 {
 
@@ -81,6 +63,7 @@ function handleSubmit(event) {
     ci = parseFloat(event.target.ci.value);
     newAspectRatio(); // Make sure aspect ratio is correct according to what was selected.
   }
+  const method = event.target['generation-type'].value;
 
   // clear the canvas before generating a new image
   const context = canvas.getContext('2d');
@@ -88,13 +71,28 @@ function handleSubmit(event) {
 
   switch (fractalPattern) {
     case "Mandelbrot":
-      mandelbrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+      if (method == "single")
+        mandelbrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+      else if (method == "thread")
+        mandelbrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+      else
+        console.log("Not done yet");
       break;
     case "Buddhabrot":
-      buddhabrot(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      if (method == "single")
+        buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      else if (method == "thread")
+        buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      else
+        console.log("Not done yet");
       break;
     case "Newton":
-      newton(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
+      if (method == "single")
+      newton_local(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
+      else if (method == "thread")
+      newton_worker(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
+      else
+        console.log("Not done yet");
       break;
   }
 }
