@@ -167,8 +167,8 @@ function newAspectRatio() {
       canvas.height = 720;
       break;
     case "1920x1080":
-      yMin = -1.1175;
-      yMax =  2.1175;
+      yMin = -1.6175;
+      yMax =  1.6175;
       xMin =  -3.375;
       xMax =   2.375;
       canvas.style.width = "1920px";
