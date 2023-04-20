@@ -263,6 +263,59 @@
             to the structure of image when compared to the mandelbrot set. 
           </p>
         </div>
+        <div class="newton" hidden>
+          <h2 class="text-center">Netwon's Fractal</h2>
+          <p>
+            Newton's Fractal is a fractal pattern created by applying Newton's method for some n degree polynomial across the complex plane.
+            Newton's method is a root-finding algorithm that produces better approximations for the roots of a real-value function as it iterates.
+            The method uses the equation
+          </p>
+          <math>
+            <msub>
+              <mi>x</mi>
+              <mn>n+1</mn>
+            </msub>
+            <mo>=</mo>
+            <msub>
+              <mi>x</mi>
+              <mn>n</mn>
+            </msub>
+            <mo>-</mo>
+            <mfrac>
+              <mrow>
+                <mi>f</mi>
+                <mi mathvariant="normal">(</mi>
+                <msub>
+                  <mi>x</mi>
+                  <mn>n</mn>
+                </msub>
+                <mi mathvariant="normal">)</mi>
+              </mrow>
+              <mrow>
+                <mi mathvariant="italic">f'</mi>
+                <mi mathvariant="normal">(</mi>
+                <msub>
+                  <mi>x</mi>
+                  <mn>n</mn>
+                </msub>
+                <mi mathvariant="normal">)</mi>
+              </mrow>
+            </mfrac>
+          </math>
+          <p>
+            where f is the function you are trying to find the roots of, and <math style="font-size:20"><msub><mi>x</mi><mn>0</mn></msub></math>
+            is some initial guess for a root of the function.
+          </p>
+          <p>
+            To create this fractal pattern, netwon's method is used over all numbers in the complex plane. Due to the fundamental theorem of algebra, we know
+            that an n degree polynomial has exactly n complex roots. Since this program uses degree 4 polynomials, there's guaranteed to be 4 roots, hence the 4 colors.
+            The exact location of the roots isn't shown, as it's important for the fractal pattern.
+          </p>
+          <p>
+            For a good explanation of why this fractal appears, look at <a href="https://www.youtube.com/watch?v=-RdOwhmqP5s&t=120s">this</a> video by
+            3Blue1Brown explaining why it occurs.
+          </p>
+        </div>
       </div>
     </div>
     <div class="row justify-content-center">
