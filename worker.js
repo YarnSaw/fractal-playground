@@ -71,7 +71,7 @@ function mandelbrot(options)
   const width = options.width;
   const height = options.height;
 
-  const img = new Uint8Array(width*height*4);
+  const img = new Uint8ClampedArray(width*height*4);
 
   const incrementPerPixelW = (right-left)/width;
   const incrementPerPixelH = (top-bottom)/height;

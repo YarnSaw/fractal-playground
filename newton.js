@@ -119,58 +119,27 @@ function newton_worker(canvas, iterations, a, b, c, d, e, left, right, bottom, t
 
 function newton_local(canvas, iterations, a, b, c, d, e, left, right, bottom, top)
 {
-  // determine width/height, as well as what the step along the number line each pixel represents
-  const width = canvas.width;
-  const height = canvas.height;
-  const incrementPerPixelW = (right-left)/width;
-  const incrementPerPixelH = (top-bottom)/height;
 
-  const derivation = derivative(a,b,c,d,e)
+  const endpoints = newton({
+    type: 'newton',
+    top,
+    bottom,
+    left,
+    right,
+    incrementPerPixelW: (right-left)/canvas.width,
+    incrementPerPixelH: (top-bottom)/canvas.height,
+    iterations,
+    derivation: derivative(a,b,c,d,e),
+    a,
+    b,
+    c,
+    d,
+    e,
+  })
 
   // get image to modify
   const ctx = canvas.getContext('2d');
   const img = ctx.createImageData(canvas.width, canvas.height);
-  let imgLocation = 0;
-  const endpoints = [];
-  for (let h = top; h > bottom; h -= incrementPerPixelH)
-  {
-    for (let w = left; w < right; w += incrementPerPixelW)
-    {
-      imgLocation++;
-
-      let startPoint = [w, h]
-      let point = [w, h]
-
-      for (let iter = 0; iter < iterations; iter++)
-      {
-        let aTerm = multComplex(a, powComplex(point, 4));
-        let bTerm = multComplex(b, powComplex(point, 3));
-        let cTerm = multComplex(c, powComplex(point, 2));
-        let dTerm = multComplex(d, point); // linear
-        let eTerm = e // constant
-
-        let fx = addComplex(aTerm, addComplex(bTerm, addComplex(cTerm, addComplex(dTerm, eTerm))))
-
-        let apTerm = multComplex(derivation[0], powComplex(point, 3));
-        let bpTerm = multComplex(derivation[1], powComplex(point, 2));
-        let cpTerm = multComplex(derivation[2], point);
-        let dpTerm = derivation[3]; // linear
-        let fPrimex = addComplex(apTerm, addComplex(bpTerm, addComplex(cpTerm, dpTerm)))
-
-        let denominator = multComplex(fPrimex, [fPrimex[0], -fPrimex[1]])
-        let numerator = multComplex(fx, [fPrimex[0], -fPrimex[1]])
-
-        let factor = [numerator[0]/denominator[0], numerator[1]/denominator[0]]
-
-        point = [point[0] - factor[0], point[1] - factor[1]]
-      }
-
-      endpoints.push([startPoint, point, imgLocation]);
-    }
-  }
-
-  const end = Date.now()
-
 
   const epsilon = 0.05
   const potentialClusters = []
