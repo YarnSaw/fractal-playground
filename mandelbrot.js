@@ -1,5 +1,45 @@
+'use strict';
 
 var cores = navigator.hardwareConcurrency/2;
+
+function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom, top)
+{
+  const height = 1//canvas.height;
+  const width = canvas.width;
+  const step = (top - bottom) / height;
+
+  function* input()
+  {
+    for (let i = 0; i < height; i++)
+      yield bottom + (step * i);
+  }
+  function workFn(input, options)
+  {
+    debugger;
+    options.top = input;
+    options.bottom = input;
+    options.height = 1;
+    const { mandelbrot } = require('fractals.js');
+    mandelbrot(options);
+  }
+  const args = {
+    left,
+    right,
+    width,
+    iterations,
+    power,
+    a,
+    b,
+    c
+  };
+  function handleResults(result)
+  {
+    console.log("got a result, but haven't implemented what to do with said result");
+  }
+
+  return deployJob(input(), workFn, [args], handleResults, {joinKey: 'brotwurst', joinSecret: 'fractal'});
+}
+
 
 function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {

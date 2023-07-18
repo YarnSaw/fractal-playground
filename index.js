@@ -75,6 +75,8 @@ function handleSubmit(event) {
         mandelbrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       else if (method == "thread")
         mandelbrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+      else if (method === 'dcp')
+        mandelbrot_dcp(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       else
         console.log("Not done yet");
       break;
