@@ -4,7 +4,7 @@ var cores = navigator.hardwareConcurrency/2;
 
 function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {
-  const height = 1//canvas.height;
+  const height = canvas.height;
   const width = canvas.width;
   const step = (top - bottom) / height;
 
