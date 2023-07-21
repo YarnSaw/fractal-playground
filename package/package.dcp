@@ -1,1 +1,1 @@
-{"name":"manyfractals","version":"0.0.7","files":{"./fractals.js":"fractals.js"}}
+{"name":"manyfractals","version":"0.1.1","files":{"./fractals.js":"fractals.js","./math.js":"math.js"}}

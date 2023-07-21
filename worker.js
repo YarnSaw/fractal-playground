@@ -1,5 +1,8 @@
 importScripts('math.js')
 
+if (typeof exports === 'object')
+  math = require('math.js');
+
 /**
  * Complex addition. Really simple
  */
