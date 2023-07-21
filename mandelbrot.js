@@ -15,12 +15,12 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
   }
   function workFn(input, options)
   {
-    debugger;
+    progress();
     options.top = input;
     options.bottom = input;
     options.height = 1;
     const { mandelbrot } = require('fractals.js');
-    mandelbrot(options);
+    return mandelbrot(options);
   }
   const args = {
     left,
@@ -34,7 +34,15 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
   };
   function handleResults(result)
   {
-    console.log("got a result, but haven't implemented what to do with said result");
+    const { sliceNumber, result: res  } = result;
+    const ctx = canvas.getContext('2d');
+
+    const img = ctx.createImageData(canvas.width, 1);
+    for (let i = 0; i < res.length; i++)
+    {
+      img.data[i] = res[i]
+    }
+    ctx.putImageData(img, 0, sliceNumber-1);
   }
 
   return deployJob(input(), workFn, [args], handleResults, [{joinKey: 'brotwurst', joinSecret: 'fractal'}]);
