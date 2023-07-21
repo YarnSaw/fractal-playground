@@ -22,7 +22,7 @@ async function deployJob(inputSet, workFn, args, handleResult, computeGroups)
   job.setPaymentAccountKeystore(keystore);
 
   // Note: do I want this passed in, or determined from the document here?
-  job.computeGroups = computeGroups || {}
+  job.computeGroups = computeGroups || job.computeGroups;
 
   await job.exec(dcp.compute.marketValue);
   return job.id;

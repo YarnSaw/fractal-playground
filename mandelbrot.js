@@ -37,7 +37,7 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
     console.log("got a result, but haven't implemented what to do with said result");
   }
 
-  return deployJob(input(), workFn, [args], handleResults, {joinKey: 'brotwurst', joinSecret: 'fractal'});
+  return deployJob(input(), workFn, [args], handleResults, [{joinKey: 'brotwurst', joinSecret: 'fractal'}]);
 }
 
 
