@@ -173,6 +173,10 @@
               <label>yMax</label>
               <input type="number" name="yMax" value="2">
             </div>
+            <div class="my-3">
+              <label>Scale Factor</label>
+              <input type="number" name="scale" value="250">
+            </div>
           </div>
           <div class="generation-container">
             <h5>Generation Settings</h5>
@@ -311,7 +315,13 @@
           <p>
             To create this fractal pattern, netwon's method is used over all numbers in the complex plane. Due to the fundamental theorem of algebra, we know
             that an n degree polynomial has exactly n complex roots. Since this program uses degree 4 polynomials, there's guaranteed to be 4 roots, hence the 4 colors.
-            The exact location of the roots isn't shown, as it's important for the fractal pattern.
+            The exact location of the roots isn't shown, as it's unimportant for the fractal pattern.
+          </p>
+          <p>
+            For this fractal, the location of 'interesting points' in the pattern may appear at different parts of the complex plane for different functions. 
+            The edges of the image can be set with xMin, xMax, yMin, yMax, which move the location of the complex plane the fractal is calculated for. 
+            Scale Factor is how many points in the complex plane will be calculated between each integer in the plane. (ie if xMin is -2, xMax is 2, and
+            the Scale Factor is 250, the image's width will be (2+(-2))*250 = 1000 pixels.)
           </p>
           <p>
             For a good explanation of why this fractal appears, look at <a href="https://www.youtube.com/watch?v=-RdOwhmqP5s&t=120s">this</a> video by

@@ -40,7 +40,7 @@ function handleSubmit(event) {
 
   const iterations = parseFloat(event.target.iterations.value);
 
-  var a,ai,b,bi,c,ci,d,di,e,ei, power;
+  var a,ai,b,bi,c,ci,d,di,e,ei, power, scale;
 
   if (fractalPattern == "Newton")
   {
@@ -59,6 +59,11 @@ function handleSubmit(event) {
     xMax = parseFloat(event.target.xMax.value);
     yMin = parseFloat(event.target.yMin.value);
     yMax = parseFloat(event.target.yMax.value);
+    scale = parseFloat(event.target.scale.value);
+    canvas.width = scale * (xMax + -xMin);
+    canvas.height = scale * (yMax + -yMin);
+    canvas.style.width = `${canvas.width}px`;
+    canvas.style.height = `${canvas.height}px`;
   }
   else
   {
@@ -117,19 +122,18 @@ function handleSelectionChange() {
   const option = document.getElementById("options").value;
   switch (option) {
     case "Mandelbrot":
+      newAspectRatio();
       Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.removeAttribute("hidden"));
       break;
     case "Buddhabrot":
+      newAspectRatio();
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.removeAttribute("hidden"));
       break;
     case "Newton":
-      document.getElementById("ratio").value = "1000x1000";
-      newAspectRatio(); // size of the canvas is 1000x1000 for netwons. Future: allow non-square
-                              // will need some way to handle not stretching the image when it's not a square
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.removeAttribute("hidden"));
