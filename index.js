@@ -4,6 +4,8 @@ var yMin, yMax, xMin, xMax;
 yMin = xMin = -1.5;
 yMax = xMax =  1.5;
 
+var generating = false;
+
 function main()
 {
 
@@ -17,6 +19,12 @@ function main()
 
 function handleSubmit(event) {
   event.preventDefault();
+
+  if (generating)
+    return;
+  generating = true;
+  document.getElementById('generate').disabled = true;
+
   const canvas = document.getElementById('canvas');
   const fractalPattern = event.target.options.value;
   const color = event.target.colors.value;
@@ -69,34 +77,40 @@ function handleSubmit(event) {
   const context = canvas.getContext('2d');
   context.clearRect(0, 0, canvas.width, canvas.height);
 
+  let finishedPromise;
   switch (fractalPattern) {
     case "Mandelbrot":
       if (method == "single")
-        mandelbrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+        finishedPromise = mandelbrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       else if (method == "thread")
-        mandelbrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+        finishedPromise = mandelbrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       else if (method === 'dcp')
-        mandelbrot_dcp(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
+        finishedPromise = mandelbrot_dcp(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax);
       else
         console.log("Not done yet");
       break;
     case "Buddhabrot":
       if (method == "single")
-        buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      finishedPromise = buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
       else if (method == "thread")
-        buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      finishedPromise = buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
       else
         console.log("Not done yet");
       break;
     case "Newton":
       if (method == "single")
-      newton_local(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
+      finishedPromise = newton_local(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
       else if (method == "thread")
-      newton_worker(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
+      finishedPromise = newton_worker(canvas, iterations, [a, ai], [b, bi], [c, ci], [d, di], [e, ei], xMin, xMax, yMin, yMax);
       else
         console.log("Not done yet");
       break;
   }
+  if (finishedPromise)
+    finishedPromise.then(() => {
+      generating = false;
+      document.getElementById('generate').disabled = false;
+    });
 }
 
 function handleSelectionChange() {

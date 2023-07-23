@@ -51,53 +51,60 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
 
 function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {
-  const width = canvas.width;
-  const height = canvas.height;
+  return new Promise((resolve, reject) => {
+    const width = canvas.width;
+    const height = canvas.height;
 
-  const perWorkerHeight = Math.floor(height/cores);
-  const perWorkerImaginarySegment = (top - bottom)/cores;
+    const perWorkerHeight = Math.floor(height/cores);
+    const perWorkerImaginarySegment = (top - bottom)/cores;
+    var workersComplete = 0;
 
-  for (let i = 0; i < cores; i++)
-  {
-    let workerBottom = top-perWorkerImaginarySegment;
-
-    // If we can't perfectly split our image by our core count, add the extra couple rows to the last segment
-    if ((i == cores - 1) && height % cores) 
-      workerBottom = bottom;
-
-    let workerNumber = i;
-    let worker = new Worker('worker.js');
-    worker.postMessage({
-      type: 'mandelbrot',
-      top,
-      bottom: workerBottom,
-      left,
-      right,
-      width,
-      height: (i == cores - 1) ? perWorkerHeight + height % cores : perWorkerHeight,
-      iterations,
-      power,
-      a,
-      b,
-      c
-    });
-
-    const workerHeight = perWorkerHeight;
-    worker.onmessage = function(msg)
+    for (let i = 0; i < cores; i++)
     {
-      const ctx = canvas.getContext('2d');
+      let workerBottom = top-perWorkerImaginarySegment;
 
-      const img = ctx.createImageData(canvas.width, (i == cores - 1) ? perWorkerHeight + height % cores : perWorkerHeight);
-      for (let i = 0; i < msg.data.length; i++)
+      // If we can't perfectly split our image by our core count, add the extra couple rows to the last segment
+      if ((i == cores - 1) && height % cores) 
+        workerBottom = bottom;
+
+      let workerNumber = i;
+      let worker = new Worker('worker.js');
+      worker.postMessage({
+        type: 'mandelbrot',
+        top,
+        bottom: workerBottom,
+        left,
+        right,
+        width,
+        height: (i == cores - 1) ? perWorkerHeight + height % cores : perWorkerHeight,
+        iterations,
+        power,
+        a,
+        b,
+        c
+      });
+
+      const workerHeight = perWorkerHeight;
+      worker.onmessage = function(msg)
       {
-        img.data[i] = msg.data[i]
-      }
-      ctx.putImageData(img, 0, workerNumber*workerHeight);
-      worker.terminate();
-    }
+        const ctx = canvas.getContext('2d');
 
-    top -= perWorkerImaginarySegment;
-  }  
+        const img = ctx.createImageData(canvas.width, (i == cores - 1) ? perWorkerHeight + height % cores : perWorkerHeight);
+        for (let i = 0; i < msg.data.length; i++)
+        {
+          img.data[i] = msg.data[i]
+        }
+        ctx.putImageData(img, 0, workerNumber*workerHeight);
+        worker.terminate();
+
+        workersComplete++;
+        if (workersComplete == cores)
+          resolve();
+      }
+
+      top -= perWorkerImaginarySegment;
+    }
+  });
 }
 
 
@@ -121,4 +128,5 @@ function mandelbrot_local(canvas, iterations, power, a, b, c, left, right, botto
   const ctx = canvas.getContext('2d');
   const img = new ImageData(result, canvas.width, canvas.height);
   ctx.putImageData(img, 0, 0);
+  return Promise.resolve();
 }
