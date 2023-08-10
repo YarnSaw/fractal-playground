@@ -158,6 +158,14 @@
           <div style="margin-bottom:15px;">
             <label>Iterations</label>
             <input type="number" name="iterations" step="1" value="100">
+            <p></p>
+            <label>Scaling (higher-resolution image)</label>
+            <input type="number" name="scaling" step="0.1" value="1">
+            <div class="buddhabrot">
+              <br>
+              <label>Number of tested points</label>
+              <input type="number" name="trials" step="10000" value="500000">
+            </div>
           </div>
           <div class="dimension-container newton" hidden>
             <h5>Dimensions</h5>
@@ -197,6 +205,10 @@
                   <option value="1920x1080">1920x1080</option>
                 </select>  
               </div>
+            </div>
+            <div class="dcp-slices buddhabrot">
+              <label>Slices</label>
+              <input type="number" name="slices" value="100" step="1">
             </div>
           </div>
           <div class="generate-button-container">
@@ -268,6 +280,11 @@
             The same modifications that could be done to the mandelbrot set can be done to this set, and changes have very similar effects
             to the structure of image when compared to the mandelbrot set. 
           </p>
+          <p>
+            An efficient way to generate the buddhabrot fractal more efficiently is to randomly select points on the complex plane to be the
+            starting points, and calculating the paths for them. The "Number of tested points" option allows you to vary how many points are selected,
+            the more the better the image but longer it takes.
+          </p>
         </div>
         <div class="newton" hidden>
           <h2 class="text-center">Netwon's Fractal</h2>
@@ -329,9 +346,6 @@
           </p>
         </div>
         <div class="mt-3">
-          <p>
-            For a page tuned for finer-detail images, <a href="./detail.html">go here.</a>
-          </p>
           <p>
             For a page tuned to generate series of images with the values slightly different between each one, <a href="./spread.html">go here.</a>
           </p>

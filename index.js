@@ -39,8 +39,9 @@ function handleSubmit(event) {
   }
 
   const iterations = parseFloat(event.target.iterations.value);
+  const scaling = parseFloat(event.target.scaling.value);
 
-  var a,ai,b,bi,c,ci,d,di,e,ei, power, scale;
+  var a,ai,b,bi,c,ci,d,di,e,ei, power, scale, trials, slices;
 
   if (fractalPattern == "Newton")
   {
@@ -74,7 +75,12 @@ function handleSubmit(event) {
     ai = parseFloat(event.target.ai.value);
     bi = parseFloat(event.target.bi.value);
     ci = parseFloat(event.target.ci.value);
-    newAspectRatio(); // Make sure aspect ratio is correct according to what was selected.
+    if (fractalPattern === 'Buddhabrot')
+    {
+      trials = parseFloat(event.target.trials.value);
+      slices = parseFloat(event.target.slices.value);
+    }
+    newAspectRatio(scaling); // Make sure aspect ratio is correct according to what was selected.
   }
   const method = event.target['generation-type'].value;
 
@@ -96,9 +102,9 @@ function handleSubmit(event) {
       break;
     case "Buddhabrot":
       if (method == "single")
-      finishedPromise = buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      finishedPromise = buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials);
       else if (method == "thread")
-      finishedPromise = buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color);
+      finishedPromise = buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials);
       else
         console.log("Not done yet");
       break;
@@ -122,13 +128,13 @@ function handleSelectionChange() {
   const option = document.getElementById("options").value;
   switch (option) {
     case "Mandelbrot":
-      newAspectRatio();
+      newAspectRatio(1);
       Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.removeAttribute("hidden"));
       break;
     case "Buddhabrot":
-      newAspectRatio();
+      newAspectRatio(1);
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.removeAttribute("hidden"));
@@ -141,7 +147,7 @@ function handleSelectionChange() {
   }
 }
 
-function newAspectRatio() {
+function newAspectRatio(scaling) {
   const canvas = document.getElementById('canvas');
   const ratio = document.getElementById("ratio").value;
   // Hard coded values to be used for mandelbrot. This set usually falls within
@@ -157,8 +163,8 @@ function newAspectRatio() {
       xMax = 1.75;
       canvas.style.width = "720px";
       canvas.style.height = "576px";
-      canvas.width = 720;
-      canvas.height = 576;
+      canvas.width = 720 * scaling;
+      canvas.height = 576 * scaling;
       break;
     case "1024x768":
       yMin = -1.5;
@@ -167,13 +173,13 @@ function newAspectRatio() {
       xMax =    2;
       canvas.style.width = "1024px";
       canvas.style.height = "768px";
-      canvas.width = 1024;
-      canvas.height = 768;
+      canvas.width = 1024 * scaling;
+      canvas.height = 768 * scaling;
       break;
     case "1000x1000":
       yMin = xMin = -2;
       yMax = xMax =  2;
-      canvas.width = canvas.height = 1000;
+      canvas.width = canvas.height = 1000 * scaling;
       canvas.style.width = canvas.style.height = "1000px";
       break;
     case "1280x720":
@@ -183,8 +189,8 @@ function newAspectRatio() {
       xMax = 2.375;
       canvas.style.width = "1280px";
       canvas.style.height = "720px";
-      canvas.width = 1280;
-      canvas.height = 720;
+      canvas.width = 1280 * scaling;
+      canvas.height = 720 * scaling;
       break;
     case "1920x1080":
       yMin = -1.6175;
@@ -193,8 +199,8 @@ function newAspectRatio() {
       xMax =   2.375;
       canvas.style.width = "1920px";
       canvas.style.height = "1080px";
-      canvas.width = 1920;
-      canvas.height = 1080;
+      canvas.width = 1920 * scaling;
+      canvas.height = 1080 * scaling;
       break
   }
 }

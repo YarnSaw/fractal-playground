@@ -1,13 +1,13 @@
 var cores = navigator.hardwareConcurrency/2;
 
-function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top, color) 
+function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top, color, trials) 
 {
   return new Promise((resolve, reject) => {
     const width = canvas.width;
     const height = canvas.height;
     var visits = new Array(width*height).fill(0)
 
-    let trials = 500000;
+    console.log(trials)
 
     var workersComplete = 0;
     for (let i = 0; i < cores; i++)
@@ -59,12 +59,12 @@ function buddhabrot_worker(canvas, iterations, power, a, b, c, left, right, bott
   });
 }
 
-function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, bottom, top, color) 
+function buddhabrot_local(canvas, iterations, power, a, b, c, left, right, bottom, top, color, trials) 
 {
 
   const visits = buddhabrot({
       type: 'buddhabrot',
-      trials: 500000,
+      trials,
       width: canvas.width,
       height: canvas.height,
       top,
