@@ -102,9 +102,11 @@ function handleSubmit(event) {
       break;
     case "Buddhabrot":
       if (method == "single")
-      finishedPromise = buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials);
+        finishedPromise = buddhabrot_local(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials);
       else if (method == "thread")
-      finishedPromise = buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials);
+        finishedPromise = buddhabrot_worker(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials);
+      else if (method == "dcp")
+        finishedPromise = buddhabrot_dcp(canvas, iterations, power, [a, ai], [b, bi], [c, ci], xMin, xMax, yMin, yMax, color, trials, slices);
       else
         console.log("Not done yet");
       break;

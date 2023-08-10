@@ -60,7 +60,7 @@ function HSVtoRGB(h, s, v) {
 }
 
 
-function mandelbrot(options)
+function mandelbrot(options, inDCP)
 {
   const a = options.a;
   const b = options.b;
@@ -85,6 +85,8 @@ function mandelbrot(options)
   {
     for (let w = 0; w < width; w += 1)
     {
+      if (inDCP)
+        progress()
       const x = incrementPerPixelW*w + left;
       const y = incrementPerPixelH*h - top;
       const startPoint = [x,y];
@@ -129,7 +131,7 @@ function mandelbrot(options)
   return img;
 }
 
-function buddhabrot(options)
+function buddhabrot(options, inDCP)
 {
   var visits = new Array(options.width*options.height).fill(0)
 
@@ -138,6 +140,8 @@ function buddhabrot(options)
 
   for (let i = 0; i < options.trials; i++)
   {
+    if (inDCP)
+      progress(i/options.trials)
     let x1 = Math.random() * (heightDiff) + (options.bottom)
     let y1 = Math.random() * (widthDiff) + (options.left)
     
@@ -179,7 +183,7 @@ function buddhabrot(options)
   return visits;
 }
 
-function newton(options)
+function newton(options, inDCP)
 {
   const endpoints = [];
   let imgLocation = 0;
@@ -187,6 +191,8 @@ function newton(options)
   {
     for (let w = options.left; w < options.right; w += options.incrementPerPixelW)
     {
+      if (inDCP)
+        progress();
 
       let startPoint = [w, h]
       let point = [w, h]
