@@ -8,11 +8,8 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
   const width = canvas.width;
   const step = (top - bottom) / height;
 
-  function* input()
-  {
-    for (let i = 0; i < height; i++)
-      yield bottom + (step * i);
-  }
+  const input = new dcp['range-object'].RangeObject({start: bottom, end: top-step, step})
+
   function workFn(input, options)
   {
     progress();
@@ -45,7 +42,7 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
     ctx.putImageData(img, 0, sliceNumber-1);
   }
 
-  return deployJob(input(), workFn, [args], handleResults, [{joinKey: 'brotwurst', joinSecret: 'fractal'}]);
+  return deployJob(input, workFn, [args], handleResults, [{joinKey: 'brotwurst', joinSecret: 'fractal'}]);
 }
 
 

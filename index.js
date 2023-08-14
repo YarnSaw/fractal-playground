@@ -139,7 +139,11 @@ function handleSelectionChange() {
       newAspectRatio(1);
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
       Array.from(document.getElementsByClassName("newton")).forEach(elem => elem.setAttribute("hidden", ""));
-      Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => elem.removeAttribute("hidden"));
+      Array.from(document.getElementsByClassName("buddhabrot")).forEach(elem => {
+        elem.removeAttribute("hidden");
+        if (document.getElementById('gen-type').value !== 'dcp' && elem.classList.contains('dcp-slices'))
+          elem.setAttribute('hidden', '');
+      });
       break;
     case "Newton":
       Array.from(document.getElementsByClassName("mandelbrot")).forEach(elem => elem.setAttribute("hidden", ""));
