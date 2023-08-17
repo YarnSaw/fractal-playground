@@ -73,7 +73,8 @@ math {
 }
 
 #download,
-#generate {
+#generate,
+#recoverImg {
     margin: 2rem;
     padding: 1rem;
     font-size: 1.4rem;

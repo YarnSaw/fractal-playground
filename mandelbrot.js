@@ -31,20 +31,24 @@ function mandelbrot_dcp(canvas, iterations, power, a, b, c, left, right, bottom,
   };
   function handleResults(result)
   {
-    const { sliceNumber, result: res  } = result;
-    const ctx = canvas.getContext('2d');
-
-    const img = ctx.createImageData(canvas.width, 1);
-    for (let i = 0; i < res.length; i++)
-    {
-      img.data[i] = res[i]
-    }
-    ctx.putImageData(img, 0, sliceNumber-1);
+    mandelbrotResultAndCanvas(result, canvas);
   }
 
-  return deployJob(input, workFn, [args], handleResults, [{joinKey: 'brotwurst', joinSecret: 'fractal'}]);
+  return deployJob(input, workFn, [args], handleResults, [{joinKey: 'brotwurst', joinSecret: 'fractal'}], 'mandelbrot');
 }
 
+function mandelbrotResultAndCanvas(result, canvas)
+{
+  const { sliceNumber, result: res  } = result;
+  const ctx = canvas.getContext('2d');
+
+  const img = ctx.createImageData(canvas.width, 1);
+  for (let i = 0; i < res.length; i++)
+  {
+    img.data[i] = res[i]
+  }
+  ctx.putImageData(img, 0, sliceNumber-1);
+}
 
 function mandelbrot_worker(canvas, iterations, power, a, b, c, left, right, bottom, top)
 {

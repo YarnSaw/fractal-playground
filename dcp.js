@@ -1,6 +1,6 @@
 var keystore
 
-async function deployJob(inputSet, workFn, args, handleResult, computeGroups)
+async function deployJob(inputSet, workFn, args, handleResult, computeGroups, fractal)
 {
   if (!keystore)
   {
@@ -14,7 +14,13 @@ async function deployJob(inputSet, workFn, args, handleResult, computeGroups)
   job.on('accepted', () => {
     console.log(' - Job accepted by scheduler.');
     console.log(` - Job has id ${job.id}`);
+
+  // Save job/job info to localstorage to be recovered later
+  const previousJobs = localStorage.getItem('jobs') ? JSON.parse(localStorage.getItem('jobs')) : [];
+  previousJobs.push({ job: job.id, arguments: args[0], fractal});
+  localStorage.setItem('jobs', JSON.stringify(previousJobs));
   });
+
   job.on('error', console.error);
   job.on('cancel', console.error);
 
@@ -24,49 +30,44 @@ async function deployJob(inputSet, workFn, args, handleResult, computeGroups)
   job.setPaymentAccountKeystore(keystore);
 
   // Note: do I want this passed in, or determined from the document here?
-  // job.computeGroups = computeGroups || job.computeGroups;
+  job.computeGroups = computeGroups || job.computeGroups;
 
   const resultsNotRetrieved = new Array(inputSet.length);
-  for (let i = 0; i < results.length; i++)
+  for (let i = 0; i < resultsNotRetrieved.length; i++)
   {
-    results[i] = i+1
+    resultsNotRetrieved[i] = i+1
   }
 
   const conn = new dcp.protocol.Connection(dcpConfig.scheduler.services.resultSubmitter.location, keystore);
 
-  var canClearInterval = false;
-  const updateResInterval = setInterval(updateResultStats, 10 * 1000);
-  async function updateResultStats()
-  {
-    if (canClearInterval)
-    {
-      clearInterval(updateResInterval);
-      document.getElementById('slices').innerText = '';
-    }
-
-    const { success, payload } = await conn.send('fetchResult', {
-      job: job.id,
-      owner: keystore.address,
-      range: resultsNotRetrieved,
-    }, keystore);
-
-    if (success)
-    {
-      await Promise.all(payload.map(async r => {
-        resultsNotRetrieved.splice(resultsNotRetrieved.indexOf(r.slice), 1);
-        const res = await dcp.utils.fetchURI(decodeURIComponent(r.value), [dcpConfig.scheduler.location.origin]);
-        handleResult({sliceNumber: r.slice, result: res});
-      }));
-    }
-
-    if (!canClearInterval)
-      document.getElementById('slices').innerText = `${resultsNotRetrieved.length - inputSet.length} results received out of ${inputSet.length} slices.`;
-    
-  }
+  const updateResInterval = setInterval(() => updateResultStats(conn, job.id, resultsNotRetrieved, inputSet.length, handleResult, updateResInterval), 10 * 1000);
 
   await job.exec(dcp.compute.marketValue);
-  canClearInterval = true;
-
   return job.id;
 }
 
+async function updateResultStats(conn, job, resultsNotRetrieved, inputSize, handleResult, interval, recovery = false)
+{
+  const { success, payload } = await conn.send('fetchResult', {
+    job,
+    owner: keystore.address,
+    range: resultsNotRetrieved,
+  }, keystore);
+
+  if (success)
+  {
+    await Promise.all(payload.map(async r => {
+      resultsNotRetrieved.splice(resultsNotRetrieved.indexOf(r.slice), 1);
+      const res = await dcp.utils.fetchURI(decodeURIComponent(r.value), [dcpConfig.scheduler.location.origin]);
+      handleResult({sliceNumber: r.slice, result: res});
+    }));
+  }
+
+  if (resultsNotRetrieved.length === 0 && !recovery)
+  {
+    clearInterval(interval);
+    document.getElementById('slices').innerText = '';
+  }
+  else if (!recovery)
+    document.getElementById('slices').innerText = `${inputSize - resultsNotRetrieved.length} results received out of ${inputSize} slices.`;
+}
