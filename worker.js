@@ -166,7 +166,7 @@ function buddhabrot(options, inDCP)
         tmpPoints.push([...currentPoint]);
       }
     }
-    if (toInfinity)
+    if (toInfinity && tmpPoints.length > options.iterations / 100)
     {
       for (let point of tmpPoints)
       {
