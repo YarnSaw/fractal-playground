@@ -25,7 +25,7 @@ async function deployJob(inputSet, workFn, args, handleResult, computeGroups, fr
   job.on('cancel', console.error);
 
   job.collateResults = false;
-  job.requires(['manyfractals/fractals.js'])
+  job.requires(['fractalia/fractals.js'])
   job.public.name = `Fractal Generation @ ${Date.now()}`;
   job.setPaymentAccountKeystore(keystore);
 
